@@ -1,0 +1,19 @@
+{
+  "name": "rtsp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "0.10.37"
+  },
+  "dependencies": {
+    "express": "4.13.3",
+    "ws": "^0.8.0"
+  },
+  "author": "Erawpalassalg",
+  "license": "ISC"
+}
