@@ -14,7 +14,7 @@ function Sprite(options){
   // percentage_ is the value from the canvas border in percent
   this.percentage_x = options.x;
   this.percentage_y = options.y;
-  this.speed = options.speed;
+  this.speed = this.canvas.height / 25 / 8;
   this.direction = options.direction;
 
   // need the onload, otherwise it just crashes...
@@ -27,7 +27,7 @@ function Sprite(options){
 };
 
 Sprite.prototype.clear = function(){
-  this.ctx.clearRect(this.x, this.y, this.width / this.numberOfFrames, this.height);
+  this.ctx.clearRect(this.x, this.y, this.canvas.height / 25 / this.numberOfFrames, this.canvas.height / 25);
 };
 
 Sprite.prototype.draw = function(){
@@ -41,8 +41,8 @@ Sprite.prototype.draw = function(){
         this.height,
         this.x,
         this.y,
-        this.width / this.numberOfFrames,
-        this.height
+        this.canvas.height / 25 / this.numberOfFrames,
+        this.canvas.height / 25
         );
   }
 };
@@ -60,7 +60,6 @@ Sprite.prototype.update = function(){
     }
     if(this.width){
       this.move();
-      [this.x, this.y] = this.getRealCoordinates(this.percentage_x, this.percentage_y);
     }
   }
 }
@@ -68,16 +67,16 @@ Sprite.prototype.update = function(){
 Sprite.prototype.move = function(){
   switch(this.direction){
     case "up":
-      this.percentage_y -= this.speed;
+      this.y -= this.speed;
       break;
     case "down":
-      this.percentage_y += this.speed;
+      this.y += this.speed;
       break;
     case "left":
-      this.percentage_x -= this.speed;
+      this.x -= this.speed;
       break;
     case "right":
-      this.percentage_x += this.speed;
+      this.x += this.speed;
       break;
   }
 }

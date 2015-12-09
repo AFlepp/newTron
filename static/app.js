@@ -6,7 +6,7 @@ var ctx =  canvas.getContext("2d");
 var game = new Game();
 
 var player;
-
+var colorChosen;
 
 var init = function (){
   choseGameScreen();
@@ -14,7 +14,7 @@ var init = function (){
 
 var choseGameScreen = function(){
   wrapper.appendChild(gameForm);
-  var submit = document.querySelector('input[type="submit"]');
+  var submits = document.querySelectorAll('img');
 
   var submitToSocket = function(e){
     e.preventDefault();
@@ -26,7 +26,9 @@ var choseGameScreen = function(){
       playerID: playerID
     }));
   }
-  submit.addEventListener('click', submitToSocket, false);
+  for(var i = 0 ; i < submits.length ; i++){
+    submits[i].addEventListener('click', submitToSocket, false);
+  }
 }
 
 init();
@@ -67,4 +69,8 @@ var gameFull = function(){
 
 var nameTaken = function(){
   alert("You can't chose that name, soz");
+}
+
+var enregistrerCouleur = function(color){
+  colorChosen = color;
 }

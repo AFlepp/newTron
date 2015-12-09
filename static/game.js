@@ -48,7 +48,7 @@ Game.prototype.addPlayer = function(player){
     sprite: new Sprite({
         image: "/sprites/images/" + 
         bike.pref +
-        "left.png",
+        "up.png",
         direction: player.direction,
         x: player.x,
         y: player.y,
