@@ -14,7 +14,7 @@ function Game(){
       imagePrefix: "j1_",
       taken: false
     },
-    pruple: {
+    purple: {
       imagePrefix: "j3_",
       taken: false,
     },
@@ -40,21 +40,28 @@ Game.prototype.mainLoop = function(){
   }
 }
 
-Game.prototype.addPlayer = function(player){
-  var bike = this.getNextBike();
+Game.prototype.addPlayer = function(player, colorChosen){
+  var bike, way = "up"; 
+  if(!colorChosen)
+    bike = this.getNextBike();
+  else{
+    bike = this.bikes[colorChosen];
+    this.bikes[colorChosen].taken = true;
+  }
   this.players[player.id] = new Player({
     id: player.id,
-    bikeColor: bike.color,
+    bikeColor: colorChosen || bike.color ,
     sprite: new Sprite({
         image: "/sprites/images/" + 
-        bike.pref +
-        "up.png",
+        bike.imagePrefix +
+        way + ".png",
         direction: player.direction,
         x: player.x,
         y: player.y,
         speed: player.speed,
         ticksPerFrame: 1,
-        numberOfFrames: 1
+        numberOfFrames: 1,
+        color: bike.color || colorChosen
       })
   })
   return this.players[player.id]
@@ -70,7 +77,7 @@ Game.prototype.getNextBike = function(){
         this.bikes[bike].taken = true;
         return {
           color: bike,
-          pref: this.bikes[bike].imagePrefix,
+          imagePrefix: this.bikes[bike].imagePrefix,
         };
       }
     }

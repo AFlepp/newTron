@@ -8,6 +8,13 @@ var game = new Game();
 var player;
 var colorChosen;
 
+var keys =  {
+      37: "left",
+      38: "up",
+      39: "right",
+      40: "down"
+    };
+
 var init = function (){
   choseGameScreen();
 }
@@ -51,16 +58,14 @@ var enableMoving = function(){
 var moved = function(e){
   console.log(e.keyCode)
   var keyCode = e.keyCode;
+  
+  if(keys[keyCode]){
   socket.send(JSON.stringify({
-    code: "playerMoved",
-    playerID: player.id,
-    direction: {
-      37: "left",
-      38: "up",
-      39: "right",
-      40: "down"
-    }[keyCode]
-  }));
+      code: "playerMoved",
+      playerID: player.id,
+      direction: keys[keyCode]
+    }));
+  }
 }
 
 var gameFull = function(){
@@ -73,4 +78,6 @@ var nameTaken = function(){
 
 var enregistrerCouleur = function(color){
   colorChosen = color;
+  var table = document.querySelector(".table");
+  table.style.display="none";
 }
