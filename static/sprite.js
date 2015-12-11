@@ -14,7 +14,13 @@ function Sprite(options){
   // percentage_ is the value from the canvas border in percent
   this.percentage_x = options.x;
   this.percentage_y = options.y;
-  this.size = this.canvas.height / 25 / 8;
+  this.direction = options.direction;
+  this.color = options.color;
+
+  // need the onload, otherwrcentage_x = options.x;
+  this.percentage_y = options.y;
+  this.size = this.canvas.height / 20;
+  this.eight = this.size / 8;
   this.direction = options.direction;
   this.color = options.color;
 
@@ -29,8 +35,8 @@ function Sprite(options){
   }
 };
 
-Sprite.prototype.clear = function(){
-  this.ctx.clearRect(this.x, this.y, this.canvas.height / 25 / this.numberOfFrames, this.canvas.height / 25);
+Sprite.prototype.clear = function(x, y){
+  this.ctx.clearRect(x || this.x, y || this.y, this.size / this.numberOfFrames, this.size);
 };
 
 Sprite.prototype.draw = function(){
@@ -44,8 +50,8 @@ Sprite.prototype.draw = function(){
         this.height,
         this.x,
         this.y,
-        this.canvas.height / 25 / this.numberOfFrames,
-        this.canvas.height / 25
+        this.size / this.numberOfFrames,
+        this.size
         );
   }
 };
@@ -69,32 +75,35 @@ Sprite.prototype.update = function(){
 
 Sprite.prototype.move = function(){
   var oldx = this.x, oldy = this.y;
+  var top, bottom, right, left;
+  [top, bottom, left, right] = [this.y + this.size <= 0, this.y >= this.canvas.height, this.x + this.size <= 0, this.x >= this.canvas.width];
+  var reachBorder = ( top || bottom || left || right);
+  
   switch(this.direction){
     case "up":
-      if((this.y + this.size) <= 0)
+      if(top)
         this.y = this.canvas.height;
-      this.y -= this.size;
+      this.y -= this.eight;
       break;
     case "down":
-      if((this.y) >= this.canvas.height)
+      if(bottom)
         this.y = 0;
-      this.y += this.size;
+      this.y += this.eight;
       break;
     case "left":
-      if((this.x + this.size) <= 0)
+      if(left)
         this.x = this.canvas.width;
-      this.x -= this.size;
-      break;
+      this.x -= this.eight;
+      break; 
     case "right":
-      if(this.x >= this.canvas.width)
+      if(right)
         this.x = 0;
-      this.x += this.size;
+      this.x += this.eight;
       break;
   }
-//if(oldy == this.y){
-  //this.drawLine(oldx, (oldy+this.size/2), this.x, (this.y+this.size/2));
-//}
-  this.drawLine(oldx+this.size/2, oldy+this.size/2, this.x+this.size/2, this.y+this.size/2);
+
+  if(!reachBorder)
+    this.drawLine();
 }
 
 Sprite.prototype.getRealCoordinates = function(x, y){
@@ -107,11 +116,79 @@ Sprite.prototype.resetCoordinates = function(){
   [this.percentage_x, this.percentage_y] = [50, 50];
 }
 
-Sprite.prototype.drawLine = function(startx, starty, endx, endy){
+Sprite.prototype.drawLine = function(){
+
+  //////////////TO DO : switch pour chaque direction, adapter la point de départ du trait pour qu'il parte du cul de la moto;,
   this.ctx.beginPath();
-  this.ctx.moveTo(startx, starty);
-  this.ctx.lineTo(endx, endy);
+  var bx, by;
+  switch(this.direction){
+    case "up":
+      this.ctx.moveTo(bx = this.x+this.size/2, by = this.y+this.size);
+      this.ctx.lineTo(bx, by + this.eight);
+      break;
+    case "down":
+      this.ctx.moveTo(bx = this.x+this.size/2, by = this.y);
+      this.ctx.lineTo(bx, by - this.eight);
+      break;
+    case "left":
+      this.ctx.moveTo(bx = this.x+this.size+this.eight, by = this.y+this.size/2);
+      this.ctx.lineTo(bx + this.eight, by);
+      break;
+    case "right":
+      this.ctx.moveTo(bx = this.x, by = this.y+this.size/2);
+      this.ctx.lineTo(bx - this.eight, by);
+      break;
+
+  }
   this.ctx.strokeStyle=this.color;
   this.ctx.stroke();
   this.ctx.closePath();
 }
+
+
+
+
+
+/*
+if(this.direction == "ard"){
+    this.ctxt.clearRect((this.posW+imThird), (this.posH-2), imThird, imFull-2);
+    this.ctxt.beginPath();
+    this.ctxt.moveTo((this.posW+imHalf), this.posH+imHalf);
+    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imFull));
+    this.ctxt.strokeStyle=this.moto[0];
+    this.ctxt.stroke();
+    this.ctxt.closePath();
+  }
+  
+  if(this.direction == "deis"){
+    this.ctxt.clearRect((this.posW-2), (this.posH+imThird), imFull-2, imThird);
+    this.ctxt.beginPath();
+    this.ctxt.moveTo((this.posW-2), this.posH+imHalf);
+    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imHalf));
+    this.ctxt.strokeStyle=this.moto[0];
+    this.ctxt.stroke();
+    this.ctxt.closePath();
+  }
+  
+  if(this.direction == "bun"){
+    this.ctxt.clearRect((this.posW+imThird), (this.posH-2), imThird, imFull-2);
+    this.ctxt.beginPath();
+    this.ctxt.moveTo((this.posW+imHalf), this.posH-2);
+    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imHalf));
+    this.ctxt.strokeStyle=this.moto[0];
+    this.ctxt.stroke();
+    this.ctxt.closePath();
+  }
+
+  if(this.direction == "cle"){
+    this.ctxt.clearRect((this.posW-2), (this.posH+imThird), imFull-2, imThird);
+    this.ctxt.beginPath();
+    this.ctxt.moveTo((this.posW+imHalf), (this.posH+imHalf));
+    this.ctxt.lineTo((this.posW+imFull), (this.posH+imHalf));
+    this.ctxt.strokeStyle=this.moto[0];
+    this.ctxt.stroke();
+    this.ctxt.closePath();
+  }
+  
+  //changement de direction
+  this.direction = dir;*/

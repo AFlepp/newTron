@@ -56,7 +56,6 @@ var enableMoving = function(){
 }
 
 var moved = function(e){
-  console.log(e.keyCode)
   var keyCode = e.keyCode;
   
   if(keys[keyCode]){
