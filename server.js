@@ -44,7 +44,7 @@ wss.on("connection", function(ws){
             direction: "left",
             x: 50,
             y: 50,
-            wall: [[direction],[x,y]],
+            wall: [["left"],[50,50]],
             speed: 0.5
           })
         } else {

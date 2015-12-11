@@ -25,7 +25,7 @@ exports.Player.prototype.move = function(){
   }
 }
 
-exports.Player.prototype.limitCanvas = function (){
+exports.Player.prototype.limitCanvas = function(){
 	 if (this.x == 100){
 		 this.x = 0
 	 }
@@ -40,7 +40,7 @@ exports.Player.prototype.limitCanvas = function (){
 	 }
 }
 
-exports.Player.prototype.wall = function (){
+exports.Player.prototype.addWall = function(){
 	if (this.direction != this.wall[0]){
 		this.wall[this.wall.length] = [this.x, this.y]
 		this.wall[0] = this.direction
@@ -73,7 +73,7 @@ exports.Player.prototype.collision = function (plCol){
 	
 	// vertical collision between a bike and his start point
 	if (((this.x <= this.wall[[1][0]])&&(this.x+4 >= this.wall[[1][0]]))
-			&& ((this.y||this.y+4) == this.wall[[1][1]]))){
+			&& ((this.y||this.y+4) == this.wall[[1][1]])){
     			broadcastToPlayers(this.game, {
     			code: "Collision",
     			playerID1: this.ID,
@@ -83,7 +83,7 @@ exports.Player.prototype.collision = function (plCol){
     			})
     // horizontal collision between a bike and his start point
 	} else if (((this.y <=(this.wall[[1][1]])&&(this.y+4 >=(this.wall[[1][1]]))
-			&& ((this.x||this.x+4)==(this.wall[[1][0]]))){
+			&& ((this.x||this.x+4)==(this.wall[[1][0]]))))){
     			broadcastToPlayers(this.game, {
     			code: "Collision",
     			playerID1: this.ID,
@@ -98,7 +98,7 @@ exports.Player.prototype.collision = function (plCol){
 		for (j = i+1 ; j<this.wall.length ; j++){
 			//vertical collision between a bike and his own wall
 			if (((this.x >=(this.wall[[i][0]])&&(this.x+4<=(this.wall[[j][0]]))
-					&& ((this.y||this.y+4)==((this.wall[[i][0]])&&(this.wall[[j][0]])))){
+					&& ((this.y||this.y+4)==((this.wall[[i][0]])&&(this.wall[[j][0]])))))){
     			broadcastToPlayers(this.game, {
     			code: "Collision",
     			playerID1: this.ID,
@@ -108,7 +108,7 @@ exports.Player.prototype.collision = function (plCol){
     			})
 		    //horizontal collision between a bike and his own wall
 			} else if (((this.y >=(this.wall[[i][1]])&&(this.y+4<=(this.wall[[j][1]]))
-					&& ((this.x||this.x+4)==((this.wall[[i][0]])&&(this.wall[[j][0]])))){
+					&& ((this.x||this.x+4)==((this.wall[[i][0]])&&(this.wall[[j][0]])))))){
     			broadcastToPlayers(this.game, {
     			code: "Collision",
     			playerID1: this.ID,
@@ -118,7 +118,7 @@ exports.Player.prototype.collision = function (plCol){
     			})
     		//vertical collision between a bike and plCol.wall
 			} else if (((this.x >=(plCol.wall[[i][0]])&&(this.x+4<=(plCol.wall[[j][0]]))
-					&& ((this.y||this.y+4)==((this.wall[[i][1]])&&(this.wall[[j][1]])))){
+					&& ((this.y||this.y+4)==((this.wall[[i][1]])&&(this.wall[[j][1]])))))){
 		    			broadcastToPlayers(this.game, {
 		    			code: "Collision",
 		    			playerID1: this.ID,
@@ -128,7 +128,7 @@ exports.Player.prototype.collision = function (plCol){
 		    			})
 		    //horizontal collision between a bike and plCol.wall
 			} else if (((this.y >=(plCol.wall[[i][1]])&&(this.y+4<=(plCol.wall[[j][1]]))
-					&& ((this.x||this.x+4)==((plCol.wall[[i][0]])&&(plCol.wall[[j][0]])))){
+					&& ((this.x||this.x+4)==((plCol.wall[[i][0]])&&(plCol.wall[[j][0]])))))){
 		    			broadcastToPlayers(this.game, {
 		    			code: "Collision",
 		    			playerID1: this.ID,
@@ -138,7 +138,7 @@ exports.Player.prototype.collision = function (plCol){
 		    			})
 		    //vertical collision between a bike and plCol.wall in drawing
 			} else if (((this.x >=plCol.x)&&(this.x+4<=(plCol.wall[[plCol.wall.length][0]]))
-					&& ((this.y||this.y+4)==(plCol.y && plCol.wall[[plCol.wall.length][1]]))){
+					&& ((this.y||this.y+4)==(plCol.y && plCol.wall[[plCol.wall.length][1]])))){
 				broadcastToPlayers(this.game, {
 				code: "Collision",
 				playerID1: this.ID,
@@ -148,7 +148,7 @@ exports.Player.prototype.collision = function (plCol){
 				})
 			 //horizontal collision between a bike and plCol.wall in drawing
 			} else if (((this.y >=plCol.y)&&(this.y+4<=(plCol.wall[[plCol.wall.length][1]]))
-					&& ((this.x||this.x+4)==(plCol.x && plCol.wall[[plCol.wall.length][0]]))){
+					&& ((this.x||this.x+4)==(plCol.x && plCol.wall[[plCol.wall.length][0]])))){
     					broadcastToPlayers(this.game, {
     					code: "Collision",
     					playerID1: this.ID,
