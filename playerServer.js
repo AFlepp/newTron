@@ -9,33 +9,52 @@ exports.Player = function(options){
 }
 
 exports.Player.prototype.move = function(){
+  var top = this.y < 0, 
+      bottom = this.y > 100, 
+      left = this.x < 0,
+      right = this.x > 100; 
+  // Set to true if has reached any border
+  var reachBorder = ( top || bottom || left || right);
+  
   switch(this.direction){
-    case "left":
-      this.x -= this.speed
-      break
-    case "right":
-      this.x += this.speed
-      break
     case "up":
-      this.y -= this.speed
-      break
+      if(top)
+        this.y = 100;
+      this.y -= this.speed * 2
+      break;
     case "down":
-      this.y += this.speed
-      break
+      if(bottom)
+        this.y = 0;
+      this.y += this.speed * 2
+      break;
+    case "left":
+      if(left)
+        this.x = 100;
+      this.x -= this.speed / 16 * 18
+      break; 
+    case "right":
+      if(right)
+        this.x = 0;
+      this.x += this.speed / 16 * 18
+      break;
   }
+  // If it hasn't reached any border, just draw a line
+  if(!reachBorder)
+    this.addWall();
+
 }
 
 exports.Player.prototype.limitCanvas = function(){
-	 if (this.x == 100){
+	 if (this.x > 100){
 		 this.x = 0
 	 }
-	 if (this.y == 100){
+	 if (this.y > 100){
 		 this.y = 0
 	 }
-	 if (this.x == 0){
+	 if (this.x < 0){
 		 this.x = 100
 	 }
-	 if (this.y == 0){
+	 if (this.y < 0){
 		 this.y = 100
 	 }
 }
@@ -52,7 +71,7 @@ exports.Player.prototype.collision = function (plCol){
 	// moto = 4 coins{[(x,y)], [(x+4,y)], [(x,y+4)], [(x+4, y+4)]}
 		
 	// collision between 2 bikes
-	if (((this.x||this.x+4)>= plCol.x)&&((this.x||this.x+4)<= plCol.x+4)){
+/*	if (((this.x||this.x+4)>= plCol.x)&&((this.x||this.x+4)<= plCol.x+4)){
         	broadcastToPlayers(this.game, {
         	code: "Collision",
         	playerID1: this.ID,
@@ -158,5 +177,5 @@ exports.Player.prototype.collision = function (plCol){
     					})
 			}
 		}
-	}
+	}*/
 }

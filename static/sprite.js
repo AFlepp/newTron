@@ -77,32 +77,32 @@ Sprite.prototype.update = function(){
 
 Sprite.prototype.move = function(){
   // Declare borders
-  var top = this.y + this.size <= 0, 
-      bottom = this.y >= this.canvas.height, 
-      left = this.x + this.size <= 0,
-      right = this.x >= this.canvas.width; 
+  var top = this.y + this.size / 2 < 0, 
+      bottom = this.y + this.size / 2 > this.canvas.height, 
+      left = this.x + this.size / 2 < 0,
+      right = this.x + this.size / 2 > this.canvas.width; 
   // Set to true if has reached any border
   var reachBorder = ( top || bottom || left || right);
   
   switch(this.direction){
     case "up":
       if(top)
-        this.y = this.canvas.height;
+        this.y = this.canvas.height - this.size / 2;
       this.y -= this.eight;
       break;
     case "down":
       if(bottom)
-        this.y = 0;
+        this.y = 0 - this.size / 2;
       this.y += this.eight;
       break;
     case "left":
       if(left)
-        this.x = this.canvas.width;
+        this.x = this.canvas.width - this.size / 2;
       this.x -= this.eight;
       break; 
     case "right":
       if(right)
-        this.x = 0;
+        this.x = 0 - this.size / 2;
       this.x += this.eight;
       break;
   }
@@ -112,8 +112,8 @@ Sprite.prototype.move = function(){
 }
 
 Sprite.prototype.getRealCoordinates = function(x, y){
-  var cx = canvas.offsetWidth / 100 * x - this.width / 2;
-  var cy = canvas.offsetHeight / 100 * y - this.height / 2;
+  var cx = canvas.offsetWidth / 100 * x - this.size / 2;
+  var cy = canvas.offsetHeight / 100 * y - this.size / 2;
   return [cx, cy];
 }
 

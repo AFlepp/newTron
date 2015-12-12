@@ -74,11 +74,13 @@ wss.on("connection", function(ws){
           this.game.start();
         }
         break
-      case "playerMoved":// ---------------------------- Someone has changed his direction
+      case "playerMoved":// ----------------- Someone has changed his direction
         this.player.direction = msg.direction
         broadcastToPlayers(this.game, {
           code: "playerMoved", 
-          direction: msg.direction, 
+          direction: msg.direction,
+          x: this.game.players[msg.playerID].x,
+          y: this.game.players[msg.playerID].y,
           playerID: msg.playerID
         })
         break
