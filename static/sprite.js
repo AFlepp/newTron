@@ -27,8 +27,23 @@ function Sprite(options){
   // need the onload, otherwise it just crashes...
   // scope change in onload, so we need a closure
   img.onload = function(){
-    spr.width = this.width;
-    spr.height = this.height;
+    switch (spr.direction){
+      case "up":
+      case "down":
+        spr.imageWidth = this.width / 3;
+        spr.imageHeight = this.height;
+        spr.spriteWidth = spr.size / 3;
+        spr.spriteHeight = spr.size;
+        console.log("un", spr)
+        break;
+      case "left":
+      case "right":
+        spr.imageWidth = this.width;
+        spr.imageHeight = this.height / 3;
+        spr.spriteWidth = spr.size;
+        spr.spriteHeight = spr.size / 3;
+        break;
+    }
     if(!spr.x){
       var realCoord = spr.getRealCoordinates(options.x, options.y);
       spr.x = realCoord[0];
@@ -38,23 +53,42 @@ function Sprite(options){
 };
 
 Sprite.prototype.clear = function(x, y){
-  this.ctx.clearRect(x || this.x, y || this.y, this.size / this.numberOfFrames, this.size);
+    this.ctx.clearRect(x || this.x, y || this.y, this.spriteWidth / this.numberOfFrames, this.spriteHeight);
 };
 
 Sprite.prototype.draw = function(){
   // Don't even try to draw something if the image isn't loaded.
-  if(this.width){
-    this.ctx.drawImage(
-        this.image,
-        this.frameIndex * this.width / this.numberOfFrames,
-        0,
-        this.width / this.numberOfFrames,
-        this.height,
-        this.x,
-        this.y,
-        this.size,
-        this.size
-        );
+  if(this.imageWidth){
+    switch(this.direction){
+      case "up":
+      case "down":
+        this.ctx.drawImage(
+            this.image,
+            this.frameIndex * this.imageWidth / this.numberOfFrames + this.imageWidth,
+            0,
+            this.imageWidth / this.numberOfFrames,
+            this.imageHeight,
+            this.x,
+            this.y,
+            this.spriteWidth,
+            this.spriteHeight
+            );
+        break;
+      case "left":
+      case "right":
+        this.ctx.drawImage(
+            this.image,
+            this.frameIndex * this.imageWidth / this.numberOfFrames,
+            this.imageHeight,
+            this.imageWidth / this.numberOfFrames,
+            this.imageHeight,
+            this.x,
+            this.y,
+            this.spriteWidth,
+            this.spriteHeight
+            );
+        break;
+    }
   }
 };
 
@@ -69,7 +103,7 @@ Sprite.prototype.update = function(){
     } else {
       this.frameIndex = 0;
     }
-    if(this.width){
+    if(this.imageWidth){
       this.move();
     }
   }
@@ -87,22 +121,22 @@ Sprite.prototype.move = function(){
   switch(this.direction){
     case "up":
       if(top)
-        this.y = this.canvas.height - this.size / 2;
+        this.y = this.canvas.height - this.spriteHeight / 2;
       this.y -= this.eight;
       break;
     case "down":
       if(bottom)
-        this.y = 0 - this.size / 2;
+        this.y = 0 - this.spriteHeight / 2;
       this.y += this.eight;
       break;
     case "left":
       if(left)
-        this.x = this.canvas.width - this.size / 2;
+        this.x = this.canvas.spriteWidth - this.spriteWidth / 2;
       this.x -= this.eight;
       break; 
     case "right":
       if(right)
-        this.x = 0 - this.size / 2;
+        this.x = 0 - this.spriteWidth / 2;
       this.x += this.eight;
       break;
   }
@@ -112,8 +146,8 @@ Sprite.prototype.move = function(){
 }
 
 Sprite.prototype.getRealCoordinates = function(x, y){
-  var cx = canvas.offsetWidth / 100 * x - this.size / 2;
-  var cy = canvas.offsetHeight / 100 * y - this.size / 2;
+  var cx = canvas.offsetWidth / 100 * x - this.spriteWidth / 2;
+  var cy = canvas.offsetHeight / 100 * y - this.spriteHeight / 2;
   return [cx, cy];
 }
 
@@ -130,19 +164,19 @@ Sprite.prototype.drawLine = function(){
   var bx, by;
   switch(this.direction){
     case "up":
-      this.ctx.moveTo(bx = this.x+this.size/2, by = this.y+this.size);
+      this.ctx.moveTo(bx = this.x+this.spriteWidth/2, by = this.y+this.spriteHeight);
       this.ctx.lineTo(bx, by + this.eight);
       break;
     case "down":
-      this.ctx.moveTo(bx = this.x+this.size/2, by = this.y);
+      this.ctx.moveTo(bx = this.x+this.spriteWidth/2, by = this.y);
       this.ctx.lineTo(bx, by - this.eight);
       break;
     case "left":
-      this.ctx.moveTo(bx = this.x+this.size+this.eight, by = this.y+this.size/2);
+      this.ctx.moveTo(bx = this.x+this.spriteWidth/*+this.eight*/, by = this.y+this.spriteHeight/2);
       this.ctx.lineTo(bx + this.eight, by);
       break;
     case "right":
-      this.ctx.moveTo(bx = this.x, by = this.y+this.size/2);
+      this.ctx.moveTo(bx = this.x, by = this.y+this.spriteHeight/2);
       this.ctx.lineTo(bx - this.eight, by);
       break;
 

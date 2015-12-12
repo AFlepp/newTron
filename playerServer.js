@@ -20,22 +20,22 @@ exports.Player.prototype.move = function(){
     case "up":
       if(top)
         this.y = 100;
-      this.y -= this.speed * 2
+      this.y -= this.speed
       break;
     case "down":
       if(bottom)
         this.y = 0;
-      this.y += this.speed * 2
+      this.y += this.speed
       break;
     case "left":
       if(left)
         this.x = 100;
-      this.x -= this.speed / 16 * 18
+      this.x -= this.speed / 16 * 9
       break; 
     case "right":
       if(right)
         this.x = 0;
-      this.x += this.speed / 16 * 18
+      this.x += this.speed / 16 * 9
       break;
   }
   // If it hasn't reached any border, just draw a line
