@@ -34,8 +34,19 @@ var buildGameForm = function(){
 var buildCanvas = function(){
   var c = document.createElement('canvas');
 
-  c.setAttribute('width', wrapper.offsetWidth);
-  c.setAttribute('height', wrapper.offsetHeight);
+  wrapperWidth = wrapper.offsetWidth;
+  wrapperHeight = wrapper.ofsetHeight;
+  
+  // Adapte the canvas to the screen size
+  // in a 16:9 fashion
+  if(wrapperWidth / 16 * 9 > wrapperHeight){
+    wrapperWidth = wrapperHeight / 9 * 16;
+  } else {
+    wrapperHeight = wrapperWidth / 16 * 9;
+  }
+
+  c.setAttribute('width', wrapperWidth);
+  c.setAttribute('height', wrapperHeight);
 
   return c;
 }

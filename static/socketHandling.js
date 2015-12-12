@@ -23,6 +23,7 @@ socket.onmessage = function(e){
       if(msg.player.id != player.id){
         game.addPlayer(msg.player);
         if(Object.keys(game.players).length === 2){
+          console.log("joined", 2, ctx)
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           game.reset();
       }
@@ -30,9 +31,17 @@ socket.onmessage = function(e){
       break;
     case "playerMoved": //A player changed his direction
       var sprite = game.players[msg.playerID].sprite;
+      // Trace
+      console.log("before", "x : ", game.players[msg.playerID].sprite.x, "y : ", game.players[msg.playerID].sprite.y);
+      //end Trace
       sprite.direction = msg.direction;
       sprite.image.src = "/sprites/images/" + game.bikes[sprite.color].imagePrefix + sprite.direction + ".png";
-      
+      // Trace
+      var realCoord = game.players[msg.playerID].sprite.getRealCoordinates(msg.x, msg.y);
+      game.players[msg.playerID].sprite.x = realCoord[0];
+      game.players[msg.playerID].sprite.y = realCoord[1]; 
+      console.log("after", "x : ", game.players[msg.playerID].sprite.x, "y : ", game.players[msg.playerID].sprite.y);
+      // end Trace
       break;
     case "gameFull":
       gameFull();

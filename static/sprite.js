@@ -19,7 +19,7 @@ function Sprite(options){
 
   // need the onload, otherwrcentage_x = options.x;
   this.percentage_y = options.y;
-  this.size = this.canvas.height / 20;
+  this.size = this.canvas.height / 25;
   this.eight = this.size / 8;
   this.direction = options.direction;
   this.color = options.color;
@@ -30,7 +30,9 @@ function Sprite(options){
     spr.width = this.width;
     spr.height = this.height;
     if(!spr.x){
-      [spr.x, spr.y] = spr.getRealCoordinates(options.x, options.y);
+      var realCoord = spr.getRealCoordinates(options.x, options.y);
+      spr.x = realCoord[0];
+      spr.y = realCoord[1];
     }
   }
 };
@@ -50,7 +52,7 @@ Sprite.prototype.draw = function(){
         this.height,
         this.x,
         this.y,
-        this.size / this.numberOfFrames,
+        this.size,
         this.size
         );
   }
@@ -74,9 +76,12 @@ Sprite.prototype.update = function(){
 }
 
 Sprite.prototype.move = function(){
-  var oldx = this.x, oldy = this.y;
-  var top, bottom, right, left;
-  [top, bottom, left, right] = [this.y + this.size <= 0, this.y >= this.canvas.height, this.x + this.size <= 0, this.x >= this.canvas.width];
+  // Declare borders
+  var top = this.y + this.size <= 0, 
+      bottom = this.y >= this.canvas.height, 
+      left = this.x + this.size <= 0,
+      right = this.x >= this.canvas.width; 
+  // Set to true if has reached any border
   var reachBorder = ( top || bottom || left || right);
   
   switch(this.direction){
@@ -101,7 +106,7 @@ Sprite.prototype.move = function(){
       this.x += this.eight;
       break;
   }
-
+  // If it hasn't reached any border, just draw a line
   if(!reachBorder)
     this.drawLine();
 }
@@ -113,7 +118,9 @@ Sprite.prototype.getRealCoordinates = function(x, y){
 }
 
 Sprite.prototype.resetCoordinates = function(){
-  [this.percentage_x, this.percentage_y] = [50, 50];
+  this.percentage_x = 50, this.percentage_y = 50;
+  var realCoord = this.getRealCoordinates(this.percentage_x, this.percentage_y)
+    this.x = realCoord[0], this.y = realCoord[1];
 }
 
 Sprite.prototype.drawLine = function(){
