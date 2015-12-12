@@ -16,11 +16,12 @@ function Sprite(options){
   this.percentage_y = options.y;
   this.direction = options.direction;
   this.color = options.color;
+  this.speed_y = options.speed;
+  this.speed_x = options.speed * 9 / 16;
 
   // need the onload, otherwrcentage_x = options.x;
   this.percentage_y = options.y;
   this.size = this.canvas.height / 25;
-  this.eight = this.size / 8;
   this.direction = options.direction;
   this.color = options.color;
 
@@ -34,7 +35,6 @@ function Sprite(options){
         spr.imageHeight = this.height;
         spr.spriteWidth = spr.size / 3;
         spr.spriteHeight = spr.size;
-        console.log("un", spr)
         break;
       case "left":
       case "right":
@@ -44,11 +44,7 @@ function Sprite(options){
         spr.spriteHeight = spr.size / 3;
         break;
     }
-    if(!spr.x){
-      var realCoord = spr.getRealCoordinates(options.x, options.y);
-      spr.x = realCoord[0];
-      spr.y = realCoord[1];
-    }
+    spr.calculateRealCoordinates();
   }
 };
 
@@ -111,50 +107,48 @@ Sprite.prototype.update = function(){
 
 Sprite.prototype.move = function(){
   // Declare borders
-  var top = this.y + this.size / 2 < 0, 
-      bottom = this.y + this.size / 2 > this.canvas.height, 
-      left = this.x + this.size / 2 < 0,
-      right = this.x + this.size / 2 > this.canvas.width; 
+  var top = this.percentage_y < 0,
+      bottom = this.percentage_y > 100,
+      left = this.percentage_x < 0,
+      right = this.percentage_x > 100; 
   // Set to true if has reached any border
   var reachBorder = ( top || bottom || left || right);
   
   switch(this.direction){
     case "up":
       if(top)
-        this.y = this.canvas.height - this.spriteHeight / 2;
-      this.y -= this.eight;
+        this.percentage_y = 100;
+      this.percentage_y -= this.speed_y;
       break;
     case "down":
       if(bottom)
-        this.y = 0 - this.spriteHeight / 2;
-      this.y += this.eight;
+        this.percentage_y = 0;
+      this.percentage_y += this.speed_y;
       break;
     case "left":
       if(left)
-        this.x = this.canvas.spriteWidth - this.spriteWidth / 2;
-      this.x -= this.eight;
+        this.percentage_x = 100;
+      this.percentage_x -= this.speed_x;
       break; 
     case "right":
       if(right)
-        this.x = 0 - this.spriteWidth / 2;
-      this.x += this.eight;
+        this.percentage_x = 0;
+      this.percentage_x += this.speed_x;
       break;
   }
+  this.calculateRealCoordinates();
   // If it hasn't reached any border, just draw a line
   if(!reachBorder)
     this.drawLine();
 }
 
-Sprite.prototype.getRealCoordinates = function(x, y){
-  var cx = canvas.offsetWidth / 100 * x - this.spriteWidth / 2;
-  var cy = canvas.offsetHeight / 100 * y - this.spriteHeight / 2;
-  return [cx, cy];
+Sprite.prototype.calculateRealCoordinates = function(){
+  this.x = canvas.offsetWidth / 100 * this.percentage_x - this.spriteWidth / 2
+  this.y = canvas.offsetHeight / 100 * this.percentage_y - this.spriteHeight / 2
 }
 
 Sprite.prototype.resetCoordinates = function(){
   this.percentage_x = 50, this.percentage_y = 50;
-  var realCoord = this.getRealCoordinates(this.percentage_x, this.percentage_y)
-    this.x = realCoord[0], this.y = realCoord[1];
 }
 
 Sprite.prototype.drawLine = function(){
@@ -165,19 +159,19 @@ Sprite.prototype.drawLine = function(){
   switch(this.direction){
     case "up":
       this.ctx.moveTo(bx = this.x+this.spriteWidth/2, by = this.y+this.spriteHeight);
-      this.ctx.lineTo(bx, by + this.eight);
+      this.ctx.lineTo(bx, by + this.spriteHeight/8);
       break;
     case "down":
       this.ctx.moveTo(bx = this.x+this.spriteWidth/2, by = this.y);
-      this.ctx.lineTo(bx, by - this.eight);
+      this.ctx.lineTo(bx, by - this.spriteHeight/8);
       break;
     case "left":
       this.ctx.moveTo(bx = this.x+this.spriteWidth/*+this.eight*/, by = this.y+this.spriteHeight/2);
-      this.ctx.lineTo(bx + this.eight, by);
+      this.ctx.lineTo(bx + this.spriteWidth/8, by);
       break;
     case "right":
       this.ctx.moveTo(bx = this.x, by = this.y+this.spriteHeight/2);
-      this.ctx.lineTo(bx - this.eight, by);
+      this.ctx.lineTo(bx - this.spriteWidth/8, by);
       break;
 
   }

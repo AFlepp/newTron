@@ -32,15 +32,15 @@ socket.onmessage = function(e){
     case "playerMoved": //A player changed his direction
       var sprite = game.players[msg.playerID].sprite;
       // Trace
-      console.log("before", "x : ", game.players[msg.playerID].sprite.x, "y : ", game.players[msg.playerID].sprite.y);
+     // console.log("before", "x : ", game.players[msg.playerID].sprite.x, "y : ", game.players[msg.playerID].sprite.y);
       //end Trace
       sprite.direction = msg.direction;
       sprite.image.src = "/sprites/images/" + game.bikes[sprite.color].imagePrefix + sprite.direction + ".png";
       // Trace
-      var realCoord = game.players[msg.playerID].sprite.getRealCoordinates(msg.x, msg.y);
-      game.players[msg.playerID].sprite.x = realCoord[0];
-      game.players[msg.playerID].sprite.y = realCoord[1]; 
-      console.log("after", "x : ", game.players[msg.playerID].sprite.x, "y : ", game.players[msg.playerID].sprite.y);
+      game.players[msg.playerID].sprite.percentage_x = msg.x;
+      game.players[msg.playerID].sprite.percentage_y = msg.y;
+      game.players[msg.playerID].sprite.calculateRealCoordinates();
+      //console.log("after", "x : ", game.players[msg.playerID].sprite.x, "y : ", game.players[msg.playerID].sprite.y);
       // end Trace
       break;
     case "gameFull":

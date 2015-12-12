@@ -45,7 +45,7 @@ wss.on("connection", function(ws){
             x: 50,
             y: 50,
             wall: [["left"],[50,50]],
-            speed: 1
+            speed: 0.5
           })
         } else {
         // If the name is already taken, tell it
