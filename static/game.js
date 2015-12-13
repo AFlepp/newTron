@@ -30,14 +30,14 @@ function Game(){
 }
 
 Game.prototype.mainLoop = function(){
+  var sprite;
+  for(pl in this.players){
+    sprite = this.players[pl].sprite;
+    sprite.clear();
+    sprite.update();
+    sprite.draw();
+  }
   window.requestAnimationFrame(this.mainLoop.bind(this), 1000/30);
-  for(pl in this.players){
-    this.players[pl].sprite.clear();
-  }
-  for(pl in this.players){
-    this.players[pl].sprite.update();
-    this.players[pl].sprite.draw();
-  }
 }
 
 Game.prototype.addPlayer = function(player, colorChosen){

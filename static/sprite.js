@@ -24,6 +24,8 @@ function Sprite(options){
   this.size = this.canvas.height / 25;
   this.direction = options.direction;
   this.color = options.color;
+  this.limits = {}
+  this.previousPlaces = []
 
   // need the onload, otherwise it just crashes...
   // scope change in onload, so we need a closure
@@ -107,77 +109,84 @@ Sprite.prototype.update = function(){
 
 Sprite.prototype.move = function(){
   // Declare borders
-  var top = this.percentage_y < 0,
-      bottom = this.percentage_y > 100,
-      left = this.percentage_x < 0,
-      right = this.percentage_x > 100; 
+  this.limits.top = this.percentage_y < 0;
+  this.limits.bottom = this.percentage_y > 100; 
+  this.limits.left = this.percentage_x < 0;
+  this.limits.right = this.percentage_x > 100; 
   // Set to true if has reached any border
-  var reachBorder = ( top || bottom || left || right);
+  var reachBorder = ( 
+      this.limits.top || 
+      this.limits.bottom || 
+      this.limits.left || 
+      this.limits.right);
   
+  if(reachBorder){
+    this.drawAllLines();
+  } 
+  // Set previous places
   switch(this.direction){
     case "up":
-      if(top)
+      if(this.limits.top)
         this.percentage_y = 100;
       this.percentage_y -= this.speed_y;
       break;
     case "down":
-      if(bottom)
+      if(this.limits.bottom)
         this.percentage_y = 0;
       this.percentage_y += this.speed_y;
       break;
     case "left":
-      if(left)
+      if(this.limits.left)
         this.percentage_x = 100;
       this.percentage_x -= this.speed_x;
       break; 
     case "right":
-      if(right)
+      if(this.limits.right)
         this.percentage_x = 0;
       this.percentage_x += this.speed_x;
       break;
   }
-  this.calculateRealCoordinates();
+  var coor = this.calculateRealCoordinates();
   // If it hasn't reached any border, just draw a line
-  if(!reachBorder)
+  this.previousPlaces.push(coor);
+  if(this.previousPlaces.length > 5){
     this.drawLine();
+  }
 }
 
+// Set x and y at the real coordinates to draw the image
+// But return the x and y relative to the real percentage points
 Sprite.prototype.calculateRealCoordinates = function(){
-  this.x = canvas.offsetWidth / 100 * this.percentage_x - this.spriteWidth / 2
-  this.y = canvas.offsetHeight / 100 * this.percentage_y - this.spriteHeight / 2
+  var midx = canvas.offsetWidth / 100 * this.percentage_x;
+  var midy = canvas.offsetHeight / 100 * this.percentage_y;
+  this.x =  midx - this.spriteWidth / 2
+  this.y = midy - this.spriteHeight / 2
+  return {x: midx, y: midy}
 }
 
 Sprite.prototype.resetCoordinates = function(){
   this.percentage_x = 50, this.percentage_y = 50;
 }
 
-Sprite.prototype.drawLine = function(){
-
-  //////////////TO DO : switch pour chaque direction, adapter la point de départ du trait pour qu'il parte du cul de la moto;,
-  this.ctx.beginPath();
-  var bx, by;
-  switch(this.direction){
-    case "up":
-      this.ctx.moveTo(bx = this.x+this.spriteWidth/2, by = this.y+this.spriteHeight);
-      this.ctx.lineTo(bx, by + this.spriteHeight/8);
-      break;
-    case "down":
-      this.ctx.moveTo(bx = this.x+this.spriteWidth/2, by = this.y);
-      this.ctx.lineTo(bx, by - this.spriteHeight/8);
-      break;
-    case "left":
-      this.ctx.moveTo(bx = this.x+this.spriteWidth/*+this.eight*/, by = this.y+this.spriteHeight/2);
-      this.ctx.lineTo(bx + this.spriteWidth/8, by);
-      break;
-    case "right":
-      this.ctx.moveTo(bx = this.x, by = this.y+this.spriteHeight/2);
-      this.ctx.lineTo(bx - this.spriteWidth/8, by);
-      break;
-
+Sprite.prototype.drawAllLines = function(){
+  while(this.previousPlaces.length > 0){
+    this.drawLine();
   }
-  this.ctx.strokeStyle=this.color;
-  this.ctx.stroke();
-  this.ctx.closePath();
+}
+
+Sprite.prototype.drawLine = function(){
+  var bx, by;
+  var start = this.previousPlaces.shift();
+  if(this.previousPlaces.length > 0){
+    bx = start.x;
+    by = start.y;
+    this.ctx.beginPath();
+    this.ctx.moveTo(bx, by);
+    this.ctx.lineTo(this.previousPlaces[0].x, this.previousPlaces[0].y)
+    this.ctx.strokeStyle=this.color;
+    this.ctx.stroke();
+    this.ctx.closePath();
+  }
 }
 
 

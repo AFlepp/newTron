@@ -6,57 +6,47 @@ exports.Player = function(options){
   this.y = options.y
   this.wall = options.wall
   this.speed = options.speed
+  this.limits = {}
 }
 
 exports.Player.prototype.move = function(){
-  var top = this.y < 0, 
-      bottom = this.y > 100, 
-      left = this.x < 0,
-      right = this.x > 100; 
+  this.limits.top = this.y < 0;
+  this.limits.bottom = this.y > 100; 
+  this.limits.left = this.x < 0;
+  this.limits.right = this.x > 100; 
   // Set to true if has reached any border
-  var reachBorder = ( top || bottom || left || right);
+  var reachBorder = ( 
+      this.limits.top || 
+      this.limits.bottom || 
+      this.limits.left || 
+      this.limits.right);
   
   switch(this.direction){
     case "up":
-      if(top)
+      if(this.limits.top)
         this.y = 100;
-      this.y -= this.speed * 2
+      this.y -= this.speed + 0.008
       break;
     case "down":
-      if(bottom)
+      if(this.limits.bottom)
         this.y = 0;
-      this.y += this.speed *2
+      this.y += this.speed + 0.008
       break;
     case "left":
-      if(left)
+      if(this.limits.left)
         this.x = 100;
-      this.x -= this.speed / 16 * 9 * 2 // Still have to understand why..
+      this.x -= this.speed / 16 * 9 + 0.008
       break; 
     case "right":
-      if(right)
+      if(this.limits.right)
         this.x = 0;
-      this.x += this.speed / 16 * 9 * 2
+      this.x += this.speed / 16 * 9 + 0.008
       break;
   }
   // If it hasn't reached any border, just draw a line
   if(!reachBorder)
     this.addWall();
 
-}
-
-exports.Player.prototype.limitCanvas = function(){
-	 if (this.x > 100){
-		 this.x = 0
-	 }
-	 if (this.y > 100){
-		 this.y = 0
-	 }
-	 if (this.x < 0){
-		 this.x = 100
-	 }
-	 if (this.y < 0){
-		 this.y = 100
-	 }
 }
 
 exports.Player.prototype.addWall = function(){
