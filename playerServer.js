@@ -52,7 +52,7 @@ exports.Player.prototype.collision = function (plCol){
 	// moto = 4 coins{[(x,y)], [(x+4,y)], [(x,y+4)], [(x+4, y+4)]}
 		
 	// collision between 2 bikes
-	if (((this.x||this.x+4)>= plCol.x)&&((this.x||this.x+4)<= plCol.x+4)){
+	/*if (((this.x||this.x+4)>= plCol.x)&&((this.x||this.x+4)<= plCol.x+4)){
         	broadcastToPlayers(this.game, {
         	code: "Collision",
         	playerID1: this.ID,
@@ -139,12 +139,12 @@ exports.Player.prototype.collision = function (plCol){
 		    //vertical collision between a bike and plCol.wall in drawing
 			} else if (((this.x >=plCol.x)&&(this.x+4<=(plCol.wall[[plCol.wall.length][0]]))
 					&& ((this.y||this.y+4)==(plCol.y && plCol.wall[[plCol.wall.length][1]]))){
-				broadcastToPlayers(this.game, {
-				code: "Collision",
-				playerID1: this.ID,
-				wallID1: this.wall,
-				playerID2: plCol.ID,
-				wallID2: plCol.ID
+						broadcastToPlayers(this.game, {
+						code: "Collision",
+						playerID1: this.ID,
+						wallID1: this.wall,
+						playerID2: plCol.ID,
+						wallID2: plCol.ID
 				})
 			 //horizontal collision between a bike and plCol.wall in drawing
 			} else if (((this.y >=plCol.y)&&(this.y+4<=(plCol.wall[[plCol.wall.length][1]]))
@@ -158,5 +158,5 @@ exports.Player.prototype.collision = function (plCol){
     					})
 			}
 		}
-	}
+	}*/
 }
