@@ -14,7 +14,6 @@ function Sprite(options){
   this.color = options.color;
   this.speed_y = options.speed;
   this.speed_x = options.speed * 9 / 16;
-  this.isAlive = true;
 
   // need the onload, otherwrcentage_x = options.x;
   this.percentage_y = options.y;
@@ -97,9 +96,7 @@ Sprite.prototype.update = function(player){
     while(this.previousPlaces.length > 0){
       this.drawLine();
     }
-  }
-  this.percentage_x = player.x;
-  this.percentage_y = player.y;
+  } this.percentage_x = player.x; this.percentage_y = player.y;
   this.previousPlaces.push(this.calculateRealCoordinates());
   this.draw();
   if(this.previousPlaces.length > 5){
@@ -134,10 +131,9 @@ Sprite.prototype.drawLine = function(){
 
 Sprite.prototype.laMuerta = function(){
   this.clear();
-  var sprite=this;
+  var sprite = this;
   var thisBikeX = sprite.x;  var thisBikeW = sprite.spriteWidth;
   var thisBikeY = sprite.y;  var thisBikeH = sprite.spriteHeight;
-  this.isAlive = false;
   console.log(sprite.spriteWidth);
   this.image.src="sprites/images/KABOUM!.png";
   

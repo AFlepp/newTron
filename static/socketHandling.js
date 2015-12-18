@@ -37,9 +37,9 @@ socket.onmessage = function(e){
       }
       break;
     case "Collision":
-       //turning into a fireball.
-          sprite.laMuerta();
-        break;
+      //turning into a fireball.
+      game.players[msg.playerID].sprite.laMuerta();
+      break;
     case "gameFull":
       gameFull();
       break;
