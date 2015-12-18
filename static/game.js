@@ -32,10 +32,12 @@ function Game(){
 Game.prototype.mainLoop = function(){
   var sprite;
   for(pl in this.players){
-    sprite = this.players[pl].sprite;
-    sprite.clear();
-    sprite.update();
-    sprite.draw();
+    if(this.players[pl].sprite.isAlive){
+      sprite = this.players[pl].sprite;
+      sprite.clear();
+      sprite.update();
+      sprite.draw();
+    }
   }
   window.requestAnimationFrame(this.mainLoop.bind(this), 1000/30);
 }

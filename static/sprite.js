@@ -18,6 +18,7 @@ function Sprite(options){
   this.color = options.color;
   this.speed_y = options.speed;
   this.speed_x = options.speed * 9 / 16;
+  this.isAlive = true;
 
   // need the onload, otherwrcentage_x = options.x;
   this.percentage_y = options.y;
@@ -150,7 +151,7 @@ Sprite.prototype.move = function(){
   // If it hasn't reached any border, just draw a line
   this.previousPlaces.push(coor);
   if(this.previousPlaces.length > 5){
-    this.drawLine();
+    this.drawLine();  
   }
 }
 
@@ -189,50 +190,22 @@ Sprite.prototype.drawLine = function(){
   }
 }
 
-
-
-
-
-/*
-if(this.direction == "ard"){
-    this.ctxt.clearRect((this.posW+imThird), (this.posH-2), imThird, imFull-2);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW+imHalf), this.posH+imHalf);
-    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imFull));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
+Sprite.prototype.laMuerta = function(){
+  this.clear();
+  var sprite=this;
+  var thisBikeX = sprite.x;  var thisBikeW = sprite.spriteWidth;
+  var thisBikeY = sprite.y;  var thisBikeH = sprite.spriteHeight;
+  this.isAlive = false;
+  console.log(sprite.spriteWidth);
+  this.image.src="sprites/images/KABOUM!.png";
   
-  if(this.direction == "deis"){
-    this.ctxt.clearRect((this.posW-2), (this.posH+imThird), imFull-2, imThird);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW-2), this.posH+imHalf);
-    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imHalf));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
+  this.image.onload= function(){
+    console.log(sprite.spriteWidth);
+    this.ctx.drawImage(this.image, sprite.x, sprite.y-thisBikeH/2);
+        setTimeout(function(){
+          sprite.clear();
+        }.bind(this), 1250);
+        
+  }.bind(this);
   
-  if(this.direction == "bun"){
-    this.ctxt.clearRect((this.posW+imThird), (this.posH-2), imThird, imFull-2);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW+imHalf), this.posH-2);
-    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imHalf));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
-
-  if(this.direction == "cle"){
-    this.ctxt.clearRect((this.posW-2), (this.posH+imThird), imFull-2, imThird);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW+imHalf), (this.posH+imHalf));
-    this.ctxt.lineTo((this.posW+imFull), (this.posH+imHalf));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
-  
-  //changement de direction
-  this.direction = dir;*/
+}

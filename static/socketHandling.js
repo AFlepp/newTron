@@ -40,6 +40,10 @@ socket.onmessage = function(e){
       game.players[msg.playerID].sprite.calculateRealCoordinates();
       // end Trace
       break;
+    case "Collision":
+       //turning into a fireball.
+          sprite.laMuerta();
+        break;
     case "gameFull":
       gameFull();
       break;
