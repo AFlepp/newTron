@@ -29,19 +29,6 @@ function Game(){
   }
 }
 
-Game.prototype.mainLoop = function(){
-  var sprite;
-  for(pl in this.players){
-    if(this.players[pl].sprite.isAlive){
-      sprite = this.players[pl].sprite;
-      sprite.clear();
-      sprite.update();
-      sprite.draw();
-    }
-  }
-  window.requestAnimationFrame(this.mainLoop.bind(this), 1000/30);
-}
-
 Game.prototype.addPlayer = function(player, colorChosen){
   var bike, way = "up"; 
   if(!colorChosen)
@@ -67,10 +54,6 @@ Game.prototype.addPlayer = function(player, colorChosen){
       })
   })
   return this.players[player.id]
-}
-
-Game.prototype.start = function(){
-  this.mainLoop();
 }
 
 Game.prototype.getNextBike = function(){
