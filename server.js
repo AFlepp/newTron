@@ -3,7 +3,6 @@ var http = require('http')
 var express = require('express')
 var Game = require('./gameServer.js').Game
 var Player = require('./playerServer.js').Player
-var Unit = require('./unitServer.js').Unit
 var app = express()
 var port = process.env.PORT || 3000
 var games = {}
@@ -42,6 +41,7 @@ wss.on("connection", function(ws){
           this.game.players[msg.playerID] = new Player({
             id: msg.playerID,
             conn: this,
+            game: this.game,
             direction: "left",
             x: 50,
             y: 50,
