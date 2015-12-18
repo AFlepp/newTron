@@ -25,7 +25,8 @@ wss.on("connection", function(ws){
         if(!games[msg.gameID]){// ---------- If it doesn't exist, create the game
           games[msg.gameID] = new Game({
             id: msg.gameID,
-            playersMax: 6
+            playersMax: 6,
+            broadcast: broadcastToPlayers
           })
         } else {// ----------------------------- Say if the game is full
           if(Object.keys(games[msg.gameID].players).length === games[msg.gameID].playersMax){
@@ -69,20 +70,17 @@ wss.on("connection", function(ws){
           code: "newPlayerJoined",
           player: this.game.getFormattedPlayer(this.playerID)
         })
+
+        var playersNumber = Object.keys(this.game.players).length;
         
-        if(Object.keys(this.game.players).length === 2){
+        if(playersNumber === 1){
           this.game.start();
+        } else if (playersNumber === 2){
+          this.game.reset();
         }
         break
       case "playerMoved":// ----------------- Someone has changed his direction
         this.player.direction = msg.direction
-        broadcastToPlayers(this.game, {
-          code: "playerMoved", 
-          direction: msg.direction,
-          x: this.game.players[msg.playerID].x,
-          y: this.game.players[msg.playerID].y,
-          playerID: msg.playerID
-        })
         break
     }
   })
@@ -91,9 +89,10 @@ wss.on("connection", function(ws){
     if(this.playerID){
       delete this.game.players[this.playerID]
       if(Object.keys(this.game.players).length < 1){
+        clearInterval(this.game.mainLoop)
         delete games[this.game.id]
+        delete this.game
       }
-      delete this.game
       delete this.playerID
     }
   })
@@ -101,7 +100,13 @@ wss.on("connection", function(ws){
 })
 
 var broadcastToPlayers = function(game, data){
+  var connect;
   for(player in game.players){
-    game.players[player].conn.send(JSON.stringify(data))
+    connection = game.players[player].conn;
+    try{
+      connection.send(JSON.stringify(data))
+    } catch(e){
+      connection.close();
+    }
   }
 }

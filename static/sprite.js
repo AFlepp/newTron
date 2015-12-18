@@ -7,10 +7,6 @@ function Sprite(options){
   this.canvas = canvas;
   this.ctx = ctx;
   this.image = img;
-  this.frameIndex = 0;
-  this.tickCount = 0;
-  this.ticksPerFrame = options.ticksPerFrame || this.ticksPerFrame || 0;
-  this.numberOfFrames = options.numberOfFrames || 1;
   // percentage_ is the value from the canvas border in percent
   this.percentage_x = options.x;
   this.percentage_y = options.y;
@@ -51,7 +47,7 @@ function Sprite(options){
 };
 
 Sprite.prototype.clear = function(x, y){
-    this.ctx.clearRect(x || this.x, y || this.y, this.spriteWidth / this.numberOfFrames, this.spriteHeight);
+    this.ctx.clearRect(x || this.x, y || this.y, this.spriteWidth, this.spriteHeight);
 };
 
 Sprite.prototype.draw = function(){
@@ -62,9 +58,9 @@ Sprite.prototype.draw = function(){
       case "down":
         this.ctx.drawImage(
             this.image,
-            this.frameIndex * this.imageWidth / this.numberOfFrames + this.imageWidth,
+            this.imageWidth,
             0,
-            this.imageWidth / this.numberOfFrames,
+            this.imageWidth,
             this.imageHeight,
             this.x,
             this.y,
@@ -76,9 +72,9 @@ Sprite.prototype.draw = function(){
       case "right":
         this.ctx.drawImage(
             this.image,
-            this.frameIndex * this.imageWidth / this.numberOfFrames,
+            0,
             this.imageHeight,
-            this.imageWidth / this.numberOfFrames,
+            this.imageWidth,
             this.imageHeight,
             this.x,
             this.y,
@@ -91,64 +87,20 @@ Sprite.prototype.draw = function(){
 };
 
 // Enable us to animate our sprites
-Sprite.prototype.update = function(){
-  this.tickCount ++;
-  if(this.tickCount === this.ticksPerFrame){
-    this.tickCount = 0;
-    // Don't try to update the movement if the image isn't loaded
-    if(this.frameIndex < this.numberOfFrames - 1){
-      this.frameIndex ++;
-    } else {
-      this.frameIndex = 0;
-    }
-    if(this.imageWidth){
-      this.move();
+Sprite.prototype.update = function(player){
+  var difference_x = player.x - this.percentage_x;
+  var difference_y = player.y - this.percentage_y;
+  this.clear();
+  this.direction = player.direction;
+  if(difference_x > 50 || difference_x < -50 || difference_y > 50 || difference_y < -50){
+    while(this.previousPlaces.length > 0){
+      this.drawLine();
     }
   }
-}
-
-Sprite.prototype.move = function(){
-  // Declare borders
-  this.limits.top = this.percentage_y < 0;
-  this.limits.bottom = this.percentage_y > 100; 
-  this.limits.left = this.percentage_x < 0;
-  this.limits.right = this.percentage_x > 100; 
-  // Set to true if has reached any border
-  var reachBorder = ( 
-      this.limits.top || 
-      this.limits.bottom || 
-      this.limits.left || 
-      this.limits.right);
-  
-  if(reachBorder){
-    this.drawAllLines();
-  } 
-  // Set previous places
-  switch(this.direction){
-    case "up":
-      if(this.limits.top)
-        this.percentage_y = 100;
-      this.percentage_y -= this.speed_y;
-      break;
-    case "down":
-      if(this.limits.bottom)
-        this.percentage_y = 0;
-      this.percentage_y += this.speed_y;
-      break;
-    case "left":
-      if(this.limits.left)
-        this.percentage_x = 100;
-      this.percentage_x -= this.speed_x;
-      break; 
-    case "right":
-      if(this.limits.right)
-        this.percentage_x = 0;
-      this.percentage_x += this.speed_x;
-      break;
-  }
-  var coor = this.calculateRealCoordinates();
-  // If it hasn't reached any border, just draw a line
-  this.previousPlaces.push(coor);
+  this.percentage_x = player.x;
+  this.percentage_y = player.y;
+  this.previousPlaces.push(this.calculateRealCoordinates());
+  this.draw();
   if(this.previousPlaces.length > 5){
     this.drawLine();
   }
@@ -164,20 +116,10 @@ Sprite.prototype.calculateRealCoordinates = function(){
   return {x: midx, y: midy}
 }
 
-Sprite.prototype.resetCoordinates = function(){
-  this.percentage_x = 50, this.percentage_y = 50;
-}
-
-Sprite.prototype.drawAllLines = function(){
-  while(this.previousPlaces.length > 0){
-    this.drawLine();
-  }
-}
-
 Sprite.prototype.drawLine = function(){
-  var bx, by;
-  var start = this.previousPlaces.shift();
   if(this.previousPlaces.length > 0){
+    var bx, by;
+    var start = this.previousPlaces.shift();
     bx = start.x;
     by = start.y;
     this.ctx.beginPath();
@@ -188,51 +130,3 @@ Sprite.prototype.drawLine = function(){
     this.ctx.closePath();
   }
 }
-
-
-
-
-
-/*
-if(this.direction == "ard"){
-    this.ctxt.clearRect((this.posW+imThird), (this.posH-2), imThird, imFull-2);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW+imHalf), this.posH+imHalf);
-    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imFull));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
-  
-  if(this.direction == "deis"){
-    this.ctxt.clearRect((this.posW-2), (this.posH+imThird), imFull-2, imThird);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW-2), this.posH+imHalf);
-    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imHalf));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
-  
-  if(this.direction == "bun"){
-    this.ctxt.clearRect((this.posW+imThird), (this.posH-2), imThird, imFull-2);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW+imHalf), this.posH-2);
-    this.ctxt.lineTo((this.posW+imHalf), (this.posH+imHalf));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
-
-  if(this.direction == "cle"){
-    this.ctxt.clearRect((this.posW-2), (this.posH+imThird), imFull-2, imThird);
-    this.ctxt.beginPath();
-    this.ctxt.moveTo((this.posW+imHalf), (this.posH+imHalf));
-    this.ctxt.lineTo((this.posW+imFull), (this.posH+imHalf));
-    this.ctxt.strokeStyle=this.moto[0];
-    this.ctxt.stroke();
-    this.ctxt.closePath();
-  }
-  
-  //changement de direction
-  this.direction = dir;*/

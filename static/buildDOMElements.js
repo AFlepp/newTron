@@ -35,7 +35,7 @@ var buildCanvas = function(){
   var c = document.createElement('canvas');
 
   wrapperWidth = wrapper.offsetWidth;
-  wrapperHeight = wrapper.ofsetHeight;
+  wrapperHeight = wrapper.offsetHeight;
   
   // Adapte the canvas to the screen size
   // in a 16:9 fashion
