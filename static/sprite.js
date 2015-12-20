@@ -3,7 +3,8 @@ function Sprite(options){
   var spr = this;
   this.player = options.player;
   this.image = new Image();
-  this.image.src = options.image;
+  this.image.src = options.img;
+  this.direction = options.direction;
 
   this.canvas = canvas;
   this.ctx = ctx;
@@ -33,8 +34,8 @@ function Sprite(options){
       default:
         spr.imageWidth = this.width;
         spr.imageHeight = this.height;
-        spr.spriteWidth = spr.size;
-        spr.spriteHeight = spr.size;
+        spr.spriteWidth = this.width;
+        spr.spriteHeight = this.height;
 
     }
     spr.calculateRealCoordinates();
@@ -80,8 +81,14 @@ Sprite.prototype.draw = function(){
       default:
         this.ctx.drawImage(
             this.image,
+            0,
+            0,
+            this.imageWidth,
+            this.imageHeight,
             this.x,
-            this.y
+            this.y,
+            this.spriteWidth,
+            this.spriteHeight
             )
     }
   }
@@ -106,9 +113,9 @@ Sprite.prototype.calculateRealCoordinates = function(){
 }
 
 Sprite.prototype.drawLine = function(){
-  if(this.player.previousPlaces.length > 0){
-    var bx, by;
-    var start = this.player.previousPlaces.shift();
+  var bx, by;
+  var start = this.player.previousPlaces.shift();
+  if(this.player.previousPlaces.length > 0 && !this.player.ghost){
     bx = start.x;
     by = start.y;
     this.ctx.beginPath();

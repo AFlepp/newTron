@@ -15,9 +15,6 @@ server.listen(port)
 
 var wss = new WSServer({server: server})
 
-var c = 0
-setInterval(function(){c++; console.log(c, games)}, 3000)
-
 wss.on("connection", function(ws){
   ws.on("message", function(data){
     var msg = JSON.parse(data)
@@ -92,14 +89,14 @@ wss.on("connection", function(ws){
     if(this.playerID){
       this.player.connected = false
       this.player.laMuerta()
-    }
-    var pl;
-    for(pl in this.game.players){
-      if(this.game.players[pl].connected){
-        return
+      var pl;
+      for(pl in this.game.players){
+        if(this.game.players[pl].connected){
+          return
+        }
       }
+      delete games[this.game.id]
     }
-    delete games[this.game.id]
   })
 
 })
