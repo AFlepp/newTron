@@ -6,6 +6,7 @@ var Player = require('./playerServer.js').Player
 var app = express()
 var port = process.env.PORT || 3000
 var games = {}
+var playersMax = 6
 
 app.use(express.static(__dirname + '/static'))
 
@@ -13,6 +14,9 @@ var server = http.createServer(app)
 server.listen(port)
 
 var wss = new WSServer({server: server})
+
+var c = 0
+setInterval(function(){c++; console.log(c, games)}, 3000)
 
 wss.on("connection", function(ws){
   ws.on("message", function(data){
@@ -24,7 +28,7 @@ wss.on("connection", function(ws){
         if(!games[msg.gameID]){// ---------- If it doesn't exist, create the game
           games[msg.gameID] = new Game({
             id: msg.gameID,
-            playersMax: 6,
+            playersMax: playersMax,
             broadcast: broadcastToPlayers
           })
         } else {// ----------------------------- Say if the game is full
@@ -37,16 +41,17 @@ wss.on("connection", function(ws){
         // First, assign the game to this connection
         this.game = games[msg.gameID]
         // Then, create the player
-        if(!this.game.players[msg.playerID]){
+        if(!this.game.players[msg.playerID] && msg.playerID != ''){
           this.game.players[msg.playerID] = new Player({
             id: msg.playerID,
             conn: this,
+            broadcast: broadcastToPlayers,
             game: this.game,
             direction: "left",
             x: 50,
             y: 50,
             wall: [["left"],[50,50]],
-            speed: 0.5
+            speed: 1
           })
         } else {
         // If the name is already taken, tell it
@@ -63,7 +68,7 @@ wss.on("connection", function(ws){
           playersNumber: Object.keys(this.game.players).length,
           playersMax : this.game.playersMax,
           gameID: this.game.id,
-          players: this.game.getFormattedAllPlayers()
+          players: this.game.getFormattedAllPlayers("WITH WALLS")
         }))
 
         broadcastToPlayers(this.game, {
@@ -73,28 +78,28 @@ wss.on("connection", function(ws){
 
         var playersNumber = Object.keys(this.game.players).length;
         
-        if(playersNumber === 1){
-          this.game.start();
-        } else if (playersNumber === 2){
+        if (playersNumber === 2){
           this.game.reset();
         }
         break
       case "playerMoved":// ----------------- Someone has changed his direction
-        this.player.direction = msg.direction
+        this.player.changeDirection(msg.direction)
         break
     }
   })
 
   ws.on("close", function(){
     if(this.playerID){
-      delete this.game.players[this.playerID]
-      if(Object.keys(this.game.players).length < 1){
-        clearInterval(this.game.mainLoop)
-        delete games[this.game.id]
-        delete this.game
-      }
-      delete this.playerID
+      this.player.connected = false
+      this.player.laMuerta()
     }
+    var pl;
+    for(pl in this.game.players){
+      if(this.game.players[pl].connected){
+        return
+      }
+    }
+    delete games[this.game.id]
   })
 
 })
@@ -102,11 +107,11 @@ wss.on("connection", function(ws){
 var broadcastToPlayers = function(game, data){
   var connect;
   for(player in game.players){
-    connection = game.players[player].conn;
+    connect = game.players[player].conn;
     try{
-      connection.send(JSON.stringify(data))
+      connect.send(JSON.stringify(data))
     } catch(e){
-      connection.close();
+      connect.close();
     }
   }
 }

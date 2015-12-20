@@ -1,31 +1,20 @@
 // Building a sprite
 function Sprite(options){
   var spr = this;
-  var img = new Image();
-  img.src = options.image;
+  this.player = options.player;
+  this.image = new Image();
+  this.image.src = options.image;
 
   this.canvas = canvas;
   this.ctx = ctx;
-  this.image = img;
-  // percentage_ is the value from the canvas border in percent
-  this.percentage_x = options.x;
-  this.percentage_y = options.y;
-  this.direction = options.direction;
-  this.color = options.color;
-  this.speed_y = options.speed;
-  this.speed_x = options.speed * 9 / 16;
 
   // need the onload, otherwrcentage_x = options.x;
-  this.percentage_y = options.y;
   this.size = this.canvas.height / 25;
-  this.direction = options.direction;
   this.color = options.color;
-  this.limits = {}
-  this.previousPlaces = []
 
   // need the onload, otherwise it just crashes...
   // scope change in onload, so we need a closure
-  img.onload = function(){
+  this.image.onload = function(){
     switch (spr.direction){
       case "up":
       case "down":
@@ -41,6 +30,12 @@ function Sprite(options){
         spr.spriteWidth = spr.size;
         spr.spriteHeight = spr.size / 3;
         break;
+      default:
+        spr.imageWidth = this.width;
+        spr.imageHeight = this.height;
+        spr.spriteWidth = spr.size;
+        spr.spriteHeight = spr.size;
+
     }
     spr.calculateRealCoordinates();
   }
@@ -82,24 +77,20 @@ Sprite.prototype.draw = function(){
             this.spriteHeight
             );
         break;
+      default:
+        this.ctx.drawImage(
+            this.image,
+            this.x,
+            this.y
+            )
     }
   }
 };
 
 // Enable us to animate our sprites
 Sprite.prototype.update = function(player){
-  var difference_x = player.x - this.percentage_x;
-  var difference_y = player.y - this.percentage_y;
-  this.clear();
-  this.direction = player.direction;
-  if(difference_x > 50 || difference_x < -50 || difference_y > 50 || difference_y < -50){
-    while(this.previousPlaces.length > 0){
-      this.drawLine();
-    }
-  } this.percentage_x = player.x; this.percentage_y = player.y;
-  this.previousPlaces.push(this.calculateRealCoordinates());
-  this.draw();
-  if(this.previousPlaces.length > 5){
+  this.player.previousPlaces.push(this.calculateRealCoordinates());
+  if(this.player.previousPlaces.length > 5){
     this.drawLine();  
   }
 }
@@ -107,43 +98,32 @@ Sprite.prototype.update = function(player){
 // Set x and y at the real coordinates to draw the image
 // But return the x and y relative to the real percentage points
 Sprite.prototype.calculateRealCoordinates = function(){
-  var midx = canvas.offsetWidth / 100 * this.percentage_x;
-  var midy = canvas.offsetHeight / 100 * this.percentage_y;
+  var midx = canvas.offsetWidth / 100 * this.player.x;
+  var midy = canvas.offsetHeight / 100 * this.player.y;
   this.x =  midx - this.spriteWidth / 2
   this.y = midy - this.spriteHeight / 2
   return {x: midx, y: midy}
 }
 
 Sprite.prototype.drawLine = function(){
-  if(this.previousPlaces.length > 0){
+  if(this.player.previousPlaces.length > 0){
     var bx, by;
-    var start = this.previousPlaces.shift();
+    var start = this.player.previousPlaces.shift();
     bx = start.x;
     by = start.y;
     this.ctx.beginPath();
     this.ctx.moveTo(bx, by);
-    this.ctx.lineTo(this.previousPlaces[0].x, this.previousPlaces[0].y)
+    this.ctx.lineTo(
+        this.player.previousPlaces[0].x, 
+        this.player.previousPlaces[0].y)
     this.ctx.strokeStyle=this.color;
     this.ctx.stroke();
     this.ctx.closePath();
   }
 }
 
-Sprite.prototype.laMuerta = function(){
-  this.clear();
-  var sprite = this;
-  var thisBikeX = sprite.x;  var thisBikeW = sprite.spriteWidth;
-  var thisBikeY = sprite.y;  var thisBikeH = sprite.spriteHeight;
-  console.log(sprite.spriteWidth);
-  this.image.src="sprites/images/KABOUM!.png";
-  
-  this.image.onload= function(){
-    console.log(sprite.spriteWidth);
-    this.ctx.drawImage(this.image, sprite.x, sprite.y-thisBikeH/2);
-        setTimeout(function(){
-          sprite.clear();
-        }.bind(this), 1250);
-        
-  }.bind(this);
-  
+Sprite.prototype.drawAllLines = function(){
+  while(this.player.previousPlaces.length > 0){
+    this.drawLine();
+  }
 }

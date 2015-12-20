@@ -1,7 +1,11 @@
 exports.Player = function(options){
   this.id = options.id
+  this.alive = true
+  this.connected = true
+  this.setGhost()
   this.game = options.game
   this.conn = options.conn
+  this.broadcast = options.broadcast
   this.direction = options.direction
   this.x = options.x
   this.y = options.y
@@ -9,6 +13,24 @@ exports.Player = function(options){
   this.wall = options.wall
   this.speed = options.speed
   this.limits = {}
+}
+
+exports.Player.prototype.setGhost = function(){
+  this.ghost = true
+  setTimeout(function(){
+    this.ghost = false
+    this.wall = [this.direction, [this.x, this.y], [this.x, this.y]]
+    this.broadcast(this.game,
+      {
+        code: "ghostEnd",
+        playerID: this.id
+      })
+  }.bind(this), 3000)
+}
+
+exports.Player.prototype.changeDirection = function(newDirection){
+  this.wall[this.wall.length] = [this.x, this.y]
+  this.direction = newDirection
 }
 
 exports.Player.prototype.move = function(){
@@ -21,30 +43,31 @@ exports.Player.prototype.move = function(){
       this.limits.top || 
       this.limits.bottom || 
       this.limits.left || 
-      this.limits.right);
+      this.limits.right
+      );
   
-  if(!reachBorder)
-	    this.addWall();
-  
+  if(!reachBorder && !this.ghost)
+    this.addWall();
+
   switch(this.direction){
     case "up":
       if(this.limits.top)
-        this.y = 100;
+        this.y = 100
       this.y -= this.speed
       break;
     case "down":
       if(this.limits.bottom)
-        this.y = 0;
+        this.y = 0
       this.y += this.speed
       break;
     case "left":
       if(this.limits.left)
-        this.x = 100;
+        this.x = 100
       this.x -= this.speed / 16 * 9
       break; 
     case "right":
       if(this.limits.right)
-        this.x = 0;
+        this.x = 0
       this.x += this.speed / 16 * 9
       break;
   }
@@ -53,11 +76,23 @@ exports.Player.prototype.move = function(){
 
 exports.Player.prototype.addWall = function(){
 	if (this.direction != this.wall[0]){
-		this.wall[this.wall.length] = [this.x, this.y]
-		this.wall[0] = this.direction
-	}
+	  this.wall[this.wall.length] = [this.x, this.y]
+	  this.wall[0] = this.direction
+        } else {
+          this.wall[this.wall.length - 1] = [this.x, this.y]
+        }
 }
 
+exports.Player.prototype.laMuerta = function(){
+  this.alive = false
+  this.broadcast(
+      this.game,
+      {
+        code: "Collision",
+        playerID: this.id
+      }
+      )
+}
 
 exports.Player.prototype.collision = function (plCol){
 	  switch(this.direction){
@@ -84,25 +119,20 @@ exports.Player.prototype.collision = function (plCol){
               ((this.avantMoto[0][1]||this.avantMoto[1][1]) >= plCol.y-(4/6)) && 
               ((this.avantMoto[0][1]||this.avantMoto[0][1]) <= plCol.y+(4/6))){
 			  	this.col += 1
-                                  for(var player in this.game.players){
-                                    this.game.players[player].conn.send(JSON.stringify({
-                                      code: "Collision",
-                                      playerID: this.id
-                                    }))
-                                  }
+                                this.alive = false
+                                plCol.alive = false
 			  	console.log("horizontal collision entre 2 motos" + " " + this.col + " " + this.wall)
+                                this.laMuerta()
+                                plCol.laMuerta()
 	  } else if ((((this.avantMoto[0][0]||this.avantMoto[1][0])>= plCol.x-(4/6))&&((this.avantMoto[0][0]||this.avantMoto[1][0])<= plCol.x+(4/6)))
 			  && ((this.avantMoto[0][1]||this.avantMoto[1][1])>= plCol.y-2)&&((this.avantMoto[0][1]||this.avantMoto[0][1])<= plCol.y+2)){
 			  	this.col += 1
-                                  for(var player in this.game.players){
-                                    this.game.players[player].conn.send(JSON.stringify({
-                                      code: "Collision",
-                                      playerID: this.id
-                                    }))
-                                  }
+                                this.alive = false
+                                plCol.alive = false
 			  	console.log("vertical collision entre 2 motos" + " " + this.col + " " + this.wall)
-	  }
-	  
+                                this.laMuerta()
+                                plCol.laMuerta()
+          }	  
 //	for (i = 1 ; i<this.wall.length ; i++){
 //		for (j = i+1 ; j<=this.wall.length ; j++){
 //			  if (((this.avantMoto[0][0]) <= (this.wall[1][0])) && ((this.avantMoto[1][0]) <= (this.wall[1][0]))

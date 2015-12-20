@@ -3,7 +3,7 @@ var wrapper = document.querySelector(".wrapper");
 var gameForm = buildGameForm();
 var canvas = buildCanvas();
 var ctx =  canvas.getContext("2d");
-var game = new Game();
+var game = new Game(canvas, ctx);
 
 var player;
 var colorChosen;
@@ -43,9 +43,12 @@ init();
 // --------------------- Triggered in socketHandling.js -----------------------
 
 var togglePageContent = function(){
+  var table = document.querySelector(".table");
   if(wrapper.contains(canvas)){
+    table.style.display="table";
     wrapper.replaceChild(gameForm, canvas);
   } else {
+    table.style.display="none";
     wrapper.replaceChild(canvas, gameForm);
     enableMoving();
   }
@@ -77,6 +80,4 @@ var nameTaken = function(){
 
 var enregistrerCouleur = function(color){
   colorChosen = color;
-  var table = document.querySelector(".table");
-  table.style.display="none";
 }

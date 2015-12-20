@@ -14,6 +14,7 @@ socket.onmessage = function(e){
         // Don't re create it if it's the current player
         if(pl != player.id){
           game.addPlayer(msg.players[pl]);
+          game.drawWall(msg.players[pl].wall, game.players[pl].bikeColor);
         }
       }
       togglePageContent();
@@ -22,29 +23,32 @@ socket.onmessage = function(e){
       if(msg.player.id != player.id) {
         game.addPlayer(msg.player);
         if(Object.keys(game.players).length === 2){
-          console.log("joined", 2, ctx)
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          game.reset();
         }
       }
       break;
     case "newGameState":
-      var p, sprite;
+      var p;
       for(p in msg.players){
-        sprite = game.players[p].sprite;
-        sprite.image.src = "/sprites/images/" + game.bikes[sprite.color].imagePrefix + sprite.direction + ".png";
-        sprite.update(msg.players[p]);
+        game.players[p].update(msg.players[p]);
       }
       break;
     case "Collision":
       //turning into a fireball.
-      game.players[msg.playerID].sprite.laMuerta();
+      console.log("collision : ", msg.playerID)
+      game.players[msg.playerID].laMuerta();
+      break;
+    case "reset":
+      game.reset();
       break;
     case "gameFull":
       gameFull();
       break;
     case "nameTaken":
       nameTaken();
+      break;
+    case "ghostEnd":
+      game.players[msg.playerID].ghost = false;
       break;
   }
 }

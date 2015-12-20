@@ -1,36 +1,40 @@
-function Game(){
+function Game(can, ctx){
   this.id;
+  this.canvas = can;
+  this.ctx = ctx;
   this.players = {};
   this.bikes = {
     green: {
-      imagePrefix: "j5_",
       taken: false
     },
     red: {
-      imagePrefix: "j4_",
       taken: false
     },
     blue:{
-      imagePrefix: "j1_",
       taken: false
     },
     purple: {
-      imagePrefix: "j3_",
-      taken: false,
+      taken: false
     },
     yellow: {
-      imagePrefix: "j2_",
       taken: false
     },
     orange: {
-      imagePrefix: "j6_",
       taken: false
     }
   }
 }
 
+Game.prototype.reset = function(){
+  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  var pl;
+  for(pl in this.players){
+    this.players[pl].ghost = true;
+  }
+}
+
 Game.prototype.addPlayer = function(player, colorChosen){
-  var bike, way = "up"; 
+  var bike; 
   if(!colorChosen)
     bike = this.getNextBike();
   else{
@@ -39,21 +43,17 @@ Game.prototype.addPlayer = function(player, colorChosen){
   }
   this.players[player.id] = new Player({
     id: player.id,
-    bikeColor: colorChosen || bike.color ,
-    sprite: new Sprite({
-        image: "/sprites/images/" + 
-        bike.imagePrefix +
-        way + ".png",
-        direction: player.direction,
-        x: player.x,
-        y: player.y,
-        speed: player.speed,
-        ticksPerFrame: 1,
-        numberOfFrames: 1,
-        color: bike.color || colorChosen
-      })
+    x: player.x,
+    y: player.y,
+    ghost: player.ghost,
+    bikeColor: colorChosen || bike.color,
+    direction: player.direction
   })
   return this.players[player.id]
+}
+
+Game.prototype.removePlayer = function(playerID){
+  delete this.players[playerID]
 }
 
 Game.prototype.getNextBike = function(){
@@ -68,8 +68,22 @@ Game.prototype.getNextBike = function(){
     }
 }
 
-Game.prototype.reset = function(){
-  for(pl in this.players){
-    this.players[pl].sprite.resetCoordinates();
+Game.prototype.drawWall = function(wall, color){
+  wall.shift(); // get rid of direction
+  var currentPoint = wall.shift();
+  this.ctx.beginPath();
+  this.ctx.moveTo(
+      this.canvas.width / 100 * currentPoint[0], 
+      this.canvas.height / 100 * currentPoint[1]
+      );
+  while(wall.length > 0){
+    currentPoint = wall.shift();
+    this.ctx.lineTo(
+        this.canvas.width / 100 * currentPoint[0], 
+        this.canvas.height / 100 * currentPoint[1]
+        );
+    this.ctx.strokeStyle=color;
+    this.ctx.stroke();
   }
+  this.ctx.closePath();
 }
