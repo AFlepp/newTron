@@ -57,8 +57,7 @@ exports.Game.prototype.getAlivePlayers = function(withWall){
   for(p in this.players){
     pl[p] = this.players[p].alive ? this.getFormattedPlayer(p, withWall) : undefined
   }
-  return pl
-}
+  return pl }
 
 exports.Game.prototype.getFormattedAllPlayers = function(withWall) {
   var pl = {}, p
@@ -107,9 +106,9 @@ exports.Game.prototype.removeDC = function(){
 exports.Game.prototype.endGame = function(option){
   clearInterval(this.mainLoop)
   if(option === "draw"){
-    // print draw
+    this.broadcast(this, {code: "draw"})
   } else {
-    //print "the winner is : option "
+    this.broadcast(this, {code: "win", playerID: option})
   }
   // Remove disconnected players
   setTimeout(function(){

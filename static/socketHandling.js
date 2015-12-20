@@ -50,5 +50,9 @@ socket.onmessage = function(e){
     case "ghostEnd":
       game.players[msg.playerID].ghost = false;
       break;
+    case "draw":
+      break;
+    case "win":
+      break;
   }
 }
