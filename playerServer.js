@@ -1,14 +1,36 @@
 exports.Player = function(options){
   this.id = options.id
+  this.alive = true
+  this.connected = true
+  this.setGhost()
+  this.game = options.game
   this.conn = options.conn
+  this.broadcast = options.broadcast
   this.direction = options.direction
   this.x = options.x
   this.y = options.y
-  this.col = options.col
-  this.avantMoto = options.avantMoto
+  this.avantMoto = []
   this.wall = options.wall
   this.speed = options.speed
   this.limits = {}
+}
+
+exports.Player.prototype.setGhost = function(){
+  this.ghost = true
+  setTimeout(function(){
+    this.ghost = false
+    this.wall = [[this.direction], [this.x, this.y], [this.x, this.y]]
+    this.broadcast(this.game,
+      {
+        code: "ghostEnd",
+        playerID: this.id
+      })
+  }.bind(this), 3000)
+}
+
+exports.Player.prototype.changeDirection = function(newDirection){
+  this.wall[this.wall.length] = [this.x, this.y]
+  this.direction = newDirection
 }
 
 exports.Player.prototype.move = function(){
@@ -21,45 +43,56 @@ exports.Player.prototype.move = function(){
       this.limits.top || 
       this.limits.bottom || 
       this.limits.left || 
-      this.limits.right);
+      this.limits.right
+      );
   
-  if(!reachBorder)
-	    this.addWall();
-  
+//  if(!reachBorder && !this.ghost)
+//    this.addWall();
+
   switch(this.direction){
     case "up":
       if(this.limits.top)
-        this.y = 100;
+        this.y = 100
       this.y -= this.speed
       break;
     case "down":
       if(this.limits.bottom)
-        this.y = 0;
+        this.y = 0
       this.y += this.speed
       break;
     case "left":
       if(this.limits.left)
-        this.x = 100;
-      this.x -= this.speed / 16 * 9 + 0.008
+        this.x = 100
+      this.x -= this.speed / 16 * 9
       break; 
     case "right":
       if(this.limits.right)
-        this.x = 0;
-      this.x += this.speed / 16 * 9 + 0.008
+        this.x = 0
+      this.x += this.speed / 16 * 9
       break;
   }
-  // If it hasn't reached any border, just draw a line
-
 
 }
 
-exports.Player.prototype.addWall = function(){
-	if (this.direction != this.wall[0]){
-		this.wall[this.wall.length] = [this.x, this.y]
-		this.wall[0] = this.direction
-	}
-}
+//exports.Player.prototype.addWall = function(){
+//	if (this.direction != this.wall[0]){
+//	  this.wall[this.wall.length] = [this.x, this.y]
+//	  this.wall[0] = this.direction
+//        } else {
+//          this.wall[this.wall.length - 1] = [this.x, this.y]
+//        }
+//}
 
+exports.Player.prototype.laMuerta = function(){
+  this.alive = false
+  this.broadcast(
+      this.game,
+      {
+        code: "Collision",
+        playerID: this.id
+      }
+      )
+}
 
 exports.Player.prototype.collision = function (plCol){
 	  switch(this.direction){
@@ -81,91 +114,57 @@ exports.Player.prototype.collision = function (plCol){
 	      break;
 	  }
 
-	  if ((((this.avantMoto[0][0]||this.avantMoto[1][0])>= plCol.x-2)&&((this.avantMoto[0][0]||this.avantMoto[1][0])<= plCol.x+2))
-			  && ((this.avantMoto[0][1]||this.avantMoto[1][1])>= plCol.y-(4/6))&&((this.avantMoto[0][1]||this.avantMoto[0][1])<= plCol.y+(4/6))){
+	  if ((((this.avantMoto[0][0]||this.avantMoto[1][0]) >= plCol.x-2) &&
+               ((this.avantMoto[0][0]||this.avantMoto[1][0])<= plCol.x+2)) && 
+              ((this.avantMoto[0][1]||this.avantMoto[1][1]) >= plCol.y-(4/6)) && 
+              ((this.avantMoto[0][1]||this.avantMoto[0][1]) <= plCol.y+(4/6))){
 			  	this.col += 1
+                                this.alive = false
+                                plCol.alive = false
 			  	console.log("horizontal collision entre 2 motos" + " " + this.col + " " + this.wall)
+                                this.laMuerta()
+                                plCol.laMuerta()
 	  } else if ((((this.avantMoto[0][0]||this.avantMoto[1][0])>= plCol.x-(4/6))&&((this.avantMoto[0][0]||this.avantMoto[1][0])<= plCol.x+(4/6)))
 			  && ((this.avantMoto[0][1]||this.avantMoto[1][1])>= plCol.y-2)&&((this.avantMoto[0][1]||this.avantMoto[0][1])<= plCol.y+2)){
 			  	this.col += 1
+                                this.alive = false
+                                plCol.alive = false
 			  	console.log("vertical collision entre 2 motos" + " " + this.col + " " + this.wall)
-	  }
-	  
-//	for (i = 1 ; i<this.wall.length ; i++){
-//		for (j = i+1 ; j<=this.wall.length ; j++){
-//			  if (((this.avantMoto[0][0]) <= (this.wall[1][0])) && ((this.avantMoto[1][0]) <= (this.wall[1][0]))
-//					  && ((this.avantMoto[0][1]) >= (this.wall[1][1])) && ((this.avantMoto[0][1]) <= (this.wall[1][1]))){
-//				  		this.col += 1
-//				  		console.log("avec le point central" + " " + this.col + " " + this.wall)
-//			  }
-//		//vertical collision between a bike and his own wall
-//			if (((this.x >=(this.wall[[i][0]])&&(this.x+4 <=(this.wall[[j][0]]))
-//					&& ((this.y||this.y+2)==((this.wall[[i][0]])&&(this.wall[[j][0]])))))){
-//				console.log("collision vertical collision with his own wall")
-//		    			broadcastToPlayers(this.game, {
-//		    			code: "Collision",
-//		    			playerID1: this.ID,
-//		    			wallID1: this.wall,
-//		    			playerID2: plCol.ID,
-//		    			wallID2: plCol.ID
-//		    			})
-//		    //horizontal collision between a bike and his own wall
-//			} else if (((this.y >=(this.wall[[i][1]])&&(this.y+4<=(this.wall[[j][1]]))
-//					&& ((this.x||this.x+4)==((this.wall[[i][0]])&&(this.wall[[j][0]])))))){
-//				console.log("collision horizontal with own wall")
-//		    			broadcastToPlayers(this.game, {
-//		    			code: "Collision",
-//		    			playerID1: this.ID,
-//		    			wallID1: this.wall,
-//		    			playerID2: plCol.ID,
-//		    			wallID2: plCol.ID
-//		    			})
-//    		//vertical collision between a bike and plCol.wall
-			} 
-//				else if (((this.x >=(plCol.wall[[i][0]])&&(this.x+4<=(plCol.wall[[j][0]]))
-//					&& ((this.y||this.y+4)==((this.wall[[i][1]])&&(this.wall[[j][1]])))))){
-//				console.log("collision vertical collision with other wall bike ")
-//		    			broadcastToPlayers(this.game, {
-//		    			code: "Collision",
-//		    			playerID1: this.ID,
-//		    			wallID1: this.wall,
-//		    			playerID2: plCol.ID,
-//		    			wallID2: plCol.ID
-//		    			})
-//		    //horizontal collision between a bike and plCol.wall
-//			} else if (((this.y >=(plCol.wall[[i][1]])&&(this.y+4<=(plCol.wall[[j][1]]))
-//					&& ((this.x||this.x+4)==((plCol.wall[[i][0]])&&(plCol.wall[[j][0]])))))){
-//				console.log("collision horizontal collision with other wall bike")
-//		    			broadcastToPlayers(this.game, {
-//		    			code: "Collision",
-//		    			playerID1: this.ID,
-//		    			wallID1: this.wall,
-//		    			playerID2: plCol.ID,
-//		    			wallID2: plCol.ID
-//		    			})
-//		    //vertical collision between a bike and plCol.wall in drawing
-//			} else if (((this.x >=plCol.x)&&(this.x+4<=(plCol.wall[[plCol.wall.length][0]]))
-//					&& ((this.y||this.y+4)==(plCol.y && plCol.wall[[plCol.wall.length][1]])))){
-//				console.log("collision vertical collision avec le mur qui se dessine")
-//						broadcastToPlayers(this.game, {
-//						code: "Collision",
-//						playerID1: this.ID,
-//						wallID1: this.wall,
-//						playerID2: plCol.ID,
-//						wallID2: plCol.ID
-//						})
-//			 //horizontal collision between a bike and plCol.wall in drawing
-//			} else if (((this.y >=plCol.y)&&(this.y+4<=(plCol.wall[[plCol.wall.length][1]]))
-//					&& ((this.x||this.x+4)==(plCol.x && plCol.wall[[plCol.wall.length][0]])))){
-//				console.log("collision horizontal collision avec le mur qui se dessine")
-//    					broadcastToPlayers(this.game, {
-//    					code: "Collision",
-//    					playerID1: this.ID,
-//    					wallID1: this.wall,
-//    					playerID2: plCol.ID,
-//    					wallID2: plCol.ID
-//    					})
-//			}
+                                this.laMuerta()
+                                plCol.laMuerta()
+          }	  
+
+	for (i = 1; i < this.wall.length; i++) {
+		for (j = i+1; j < this.wall.length; j++) {
+
+			//vertical collision with is own wall
+			if (this.x >= this.wall[i][0] && this.x <= this.wall[i + 1][0]
+					&& this.y == (this.wall[i][1] && this.wall[i + 1][1])) {
+				this.alive = false
+				console.log("vertical collision")
+				this.laMuerta()
+
+			} else if (this.x >= this.wall[i + 1][0]
+					&& this.x <= this.wall[i][0]
+					&& this.y == (this.wall[i][1] && this.wall[i + 1][1])) {
+				this.alive = false
+				console.log("vertical collision")
+				this.laMuerta()
+
+			}
+
+			if (this.y >= this.wall[i][1] && this.y <= this.wall[i + 1][1]
+					&& this.x == (this.wall[i][0] && this.wall[i + 1][0])) {
+				this.alive = false
+				console.log("horizontal collision")
+				this.laMuerta()
+			} else if (this.y >= this.wall[i + 1][1]
+					&& this.y <= this.wall[i][1]
+					&& this.x == (this.wall[i][0] && this.wall[i + 1][0])) {
+				this.alive = false
+				console.log("horizontal collision")
+				this.laMuerta()
+			}
 		}
 	}
 }
