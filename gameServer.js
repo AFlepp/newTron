@@ -36,7 +36,7 @@ exports.Game.prototype.calculateNextFrame = function() {
   for (i = 0; i < keys.length; i++) {
     if(this.players[keys[i]] && this.players[keys[i]].alive){
       this.players[keys[i]].move()
-      for (j = i+1; j < keys.length; j++){
+      for (j = i; j < keys.length; j++){
         if(!this.players[keys[j]].ghost && !this.players[keys[i]].ghost){
           this.players[keys[i]].collision(this.players[keys[j]])
         }

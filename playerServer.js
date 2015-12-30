@@ -9,7 +9,7 @@ exports.Player = function(options){
   this.direction = options.direction
   this.x = options.x
   this.y = options.y
-  this.avantMoto = []
+  this.boxCol = {}
   this.wall = options.wall
   this.speed = options.speed
   this.limits = {}
@@ -19,7 +19,7 @@ exports.Player.prototype.setGhost = function(){
   this.ghost = true
   setTimeout(function(){
     this.ghost = false
-    this.wall = [this.direction, [this.x, this.y], [this.x, this.y]]
+    this.wall = [[this.direction], [this.x, this.y], [this.x, this.y]]
     this.broadcast(this.game,
       {
         code: "ghostEnd",
@@ -53,22 +53,22 @@ exports.Player.prototype.move = function(){
     case "up":
       if(this.limits.top)
         this.y = 100
-      this.y -= this.speed
+        this.y -= this.speed
       break;
     case "down":
       if(this.limits.bottom)
         this.y = 0
-      this.y += this.speed
+        this.y += this.speed
       break;
     case "left":
       if(this.limits.left)
         this.x = 100
-      this.x -= this.speed / 16 * 9
+        this.x -= this.speed / 16 * 9
       break; 
     case "right":
       if(this.limits.right)
         this.x = 0
-      this.x += this.speed / 16 * 9
+        this.x += this.speed / 16 * 9
       break;
   }
 
