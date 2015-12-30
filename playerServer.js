@@ -19,7 +19,7 @@ exports.Player.prototype.setGhost = function(){
   this.ghost = true
   setTimeout(function(){
     this.ghost = false
-    this.wall = [[this.direction], [this.x, this.y], [this.x, this.y]]
+    this.wall = [this.direction, [this.x, this.y], [this.x, this.y]]
     this.broadcast(this.game,
       {
         code: "ghostEnd",
@@ -130,6 +130,7 @@ exports.Player.prototype.collision = function (plCol){
 		break;
 	}	
 	
+	
 	if (this != plCol){
 	
 		if ((this.x >= this.boxCol.x1 && this.x <= this.boxCol.x2)			
@@ -145,19 +146,18 @@ exports.Player.prototype.collision = function (plCol){
 		
 	}
 	
-	for (i = 1; i < plCol.wall.length; i++) {
-		for (j = i+1; j < plCol.wall.length; j++) {
+	for (i = 1; i < plCol.wall.length-1; i++) {
 
 				if (this.x >= plCol.wall[i][0] && this.x <= plCol.wall[i+1][0]
 						&& this.y == (plCol.wall[i][1] && plCol.wall[i+1][1])) {
 							this.alive = false
-							console.log("vertical collision" + plCol.wall)
+							console.log("vertical collision")
 							this.laMuerta()
 	
 				} else if (this.x <= plCol.wall[i][0]&& this.x >= plCol.wall[i+1][0]
 						&& this.y == (plCol.wall[i][1] && plCol.wall[i+1][1])) {
 							this.alive = false
-							console.log("vertical collision" + this.wall)
+							console.log("vertical collision")
 							this.laMuerta()
 	
 				}
@@ -165,17 +165,15 @@ exports.Player.prototype.collision = function (plCol){
 				if (this.y >= plCol.wall[i][1] && this.y <= plCol.wall[i+1][1]
 						&& this.x == (plCol.wall[i][0] && plCol.wall[i+1][0])) {
 							this.alive = false
-							console.log("horizontal collision" + plCol.wall)
+							console.log("horizontal collision")
 							this.laMuerta()
 				} else if (this.y >= plCol.wall[i+1][1]
 						&& this.y <= plCol.wall[i][1]
 						&& this.x == (plCol.wall[i][0] && plCol.wall[i+1][0])) {
 							this.alive = false
-							console.log("horizontal collision" + this.wall)
+							console.log("horizontal collision")
 							this.laMuerta()
 				}
-		}
 	}
 
-	
 }
