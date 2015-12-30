@@ -62,13 +62,13 @@ var enableMoving = function(){
 var deviceMoved = function(e){
   var acc = event.accelerationIncludingGravity;
   var direction;
-  if (acc.x <= 0) {
+  if (acc.x <= 2) {
     direction = "right"
-  } else if (acc.x >= 0) {
+  } else if (acc.x >= -2) {
     direction = "left"
-  } else if (acc.y <= 0) {
+  } else if (acc.y <= 2) {
     direction = "up"
-  } else if (acc.y >= 0) {
+  } else if (acc.y >= -2) {
     direction = "down"
   }
 
