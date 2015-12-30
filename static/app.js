@@ -76,9 +76,9 @@ var deviceMoved = function(e){
       direction = "left"
     } 
   } else {
-    if (acc.y < 3) {
+    if (acc.y < 0) {
       direction = "up"
-    } else if (acc.y > -3) {
+    } else if (acc.y > 6) {
       direction = "down"
     }
   }
