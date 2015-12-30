@@ -56,6 +56,27 @@ var togglePageContent = function(){
 
 var enableMoving = function(){
   window.addEventListener("keydown", moved, false);
+  window.addEventListener("devicemotion", deviceMoved, false);
+}
+
+var deviceMoved = function(e){
+  var acc = event.accelerationIncludingGravity;
+  var direction;
+  if (acc.x > 5) {
+    direction = "right"
+  } else if (acc.x < 5) {
+    direction = "left"
+  } else if (acc.y > 5) {
+    direction = "up"
+  } else if (acc.y < 5) {
+    direction = "down"
+  }
+
+  socket.send(JSON.stringify({
+    code: "playerMoved",
+    playerID: player.id,
+    direction: direction
+  }));
 }
 
 var moved = function(e){
