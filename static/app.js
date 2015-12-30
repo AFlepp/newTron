@@ -69,20 +69,21 @@ var enableMoving = function(){
 var deviceMoved = function(e){
   var acc = event.accelerationIncludingGravity;
   var direction;
-  if (acc.x < 2) {
-    direction = "right"
-  } else if (acc.x > -2) {
-    direction = "left"
-  } 
-  if (acc.y < -2) {
-    direction = "up"
-  } else if (acc.y > 2) {
-    direction = "down"
+  if(player.direction == "up" || player.direction == "down"){
+    if (acc.x < 2) {
+      direction = "right"
+    } else if (acc.x > -2) {
+      direction = "left"
+    } 
+  } else {
+    if (acc.y < -2) {
+      direction = "up"
+    } else if (acc.y > 2) {
+      direction = "down"
+    }
   }
 
-  if(direction != player.direction && 
-      direction != invDirections[player.direction])
-  {
+  if(direction){
     socket.send(JSON.stringify({
       code: "playerMoved",
       playerID: player.id,
