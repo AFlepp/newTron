@@ -81,7 +81,7 @@ var deviceMoved = function(e){
   }
 
   if(direction != player.direction && 
-      direction != invDirection[player.direction])
+      direction != invDirections[player.direction])
   {
     socket.send(JSON.stringify({
       code: "playerMoved",
@@ -94,7 +94,7 @@ var deviceMoved = function(e){
 var moved = function(e){
   var keyCode = e.keyCode;
   
-  if(keys[keyCode] && keys[keyCode] != invDirection[player.Direction]){
+  if(keys[keyCode] && keys[keyCode] != invDirections[player.Direction]){
   socket.send(JSON.stringify({
       code: "playerMoved",
       playerID: player.id,
