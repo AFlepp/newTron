@@ -98,16 +98,22 @@ Sprite.prototype.draw = function(){
 Sprite.prototype.update = function(player){
   this.player.previousPlaces.push(this.calculateRealCoordinates());
   if(this.player.previousPlaces.length > 5){
-    this.drawLine();  
+    this.drawLine();
   }
 }
 
 // Set x and y at the real coordinates to draw the image
 // But return the x and y relative to the real percentage points
 Sprite.prototype.calculateRealCoordinates = function(){
-  var midx = canvas.offsetWidth / 100 * this.player.x;
-  var midy = canvas.offsetHeight / 100 * this.player.y;
-  this.x =  midx - this.spriteWidth / 2
+  var midx, midy;
+  if(reverted){
+    midx = canvas.offsetWidth / 100 * this.player.y;
+    midy = canvas.offsetHeight / 100 * this.player.x;
+  } else {
+    midx = canvas.offsetWidth / 100 * this.player.x;
+    midy = canvas.offsetHeight / 100 * this.player.y;
+  }
+  this.x = midx - this.spriteWidth / 2
   this.y = midy - this.spriteHeight / 2
   return {x: midx, y: midy}
 }

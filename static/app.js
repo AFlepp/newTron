@@ -1,5 +1,5 @@
 var wrapper = document.querySelector(".wrapper");
-
+var reverted;
 var gameForm = buildGameForm();
 var canvas = buildCanvas();
 var ctx =  canvas.getContext("2d");
@@ -15,12 +15,22 @@ var keys =  {
       40: "down"
     };
 
+// Table of opposite directions
 var invDirections = {
   right: "left",
   left: "right",
   up: "down",
   down: "up"
+};
+
+// Table of inverted x and y directions
+var revertedDirections = {
+  right: "down",
+  left: "up",
+  up: "left",
+  down: "right"
 }
+
 
 var init = function (){
   choseGameScreen();
@@ -66,6 +76,18 @@ var enableMoving = function(){
   window.addEventListener("devicemotion", deviceMoved, false);
 }
 
+var sendDirection = function(direction){
+  if(direction != player.direction && direction != invDirections[player.direction]){
+    if(reverted)
+      direction = revertedDirections[direction];
+    socket.send(JSON.stringify({
+      code: "playerMoved",
+      playerID: player.id,
+      direction: direction
+    }));
+  }
+}
+
 var deviceMoved = function(e){
   var acc = event.accelerationIncludingGravity;
   var direction;
@@ -84,23 +106,14 @@ var deviceMoved = function(e){
   }
 
   if(direction){
-    socket.send(JSON.stringify({
-      code: "playerMoved",
-      playerID: player.id,
-      direction: direction
-    }));
+    sendDirection(direction);
   }
 }
 
 var moved = function(e){
   var keyCode = e.keyCode;
-  if(keys[keyCode] && keys[keyCode] != invDirections[player.direction]){
-  socket.send(JSON.stringify({
-      code: "playerMoved",
-      playerID: player.id,
-      direction: keys[keyCode]
-    }));
-  }
+  if(keys[keyCode])
+    sendDirection(keys[keyCode]);
 }
 
 var gameFull = function(){

@@ -40,8 +40,12 @@ Player.prototype.update = function(receivedPlayerData){
   var difference_y = receivedPlayerData.y - this.y;
   if(difference_x > 50 || difference_x < -50 || difference_y > 50 || difference_y < -50){
     this.sprites[this.direction].drawAllLines();
-  } 
-  this.direction = receivedPlayerData.direction;
+  }
+  if(reverted){
+    this.direction = revertedDirections[receivedPlayerData.direction];
+  } else {
+    this.direction = receivedPlayerData.direction;
+  }
   this.x = receivedPlayerData.x; 
   this.y = receivedPlayerData.y;
   this.sprites[this.direction].update();

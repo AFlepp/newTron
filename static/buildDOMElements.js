@@ -35,10 +35,20 @@ var buildCanvas = function(){
   
   // Adapte the canvas to the screen size
   // in a 16:9 fashion
-  if(wrapperWidth / 16 * 9 > wrapperHeight){
+  if(wrapperWidth / 16 * 9 > wrapperHeight) {
+    reverted = false;
     wrapperWidth = wrapperHeight / 9 * 16;
+  } else if (wrapperHeight / 16 * 9 > wrapperWidth) {
+    reverted = true;
+    wrapperHeight = wrapperWidth / 9 * 16;
   } else {
-    wrapperHeight = wrapperWidth / 16 * 9;
+    if(wrapperWidth > wrapperHeight){
+      reverted = false;
+      wrapperHeight = wrapperWidth / 16 * 9;
+    } else {
+      reverted = true;
+      wrapperWidth = wrapperHeight / 16 * 9;
+    }
   }
 
   c.setAttribute('width', wrapperWidth);
