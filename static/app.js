@@ -66,10 +66,8 @@ var deviceMoved = function(e){
     direction = "right"
   } else if (acc.x >= -2) {
     direction = "left"
-  } else if (acc.y <= 2) {
+  } else {
     direction = "up"
-  } else if (acc.y >= -2) {
-    direction = "down"
   }
 
   socket.send(JSON.stringify({
