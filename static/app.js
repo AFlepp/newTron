@@ -61,6 +61,7 @@ var enableMoving = function(){
 
 var deviceMoved = function(e){
   var acc = event.accelerationIncludingGravity;
+  console.log(add.x, acc.y)
   var direction;
   if (acc.x > 2500) {
     direction = "right"
