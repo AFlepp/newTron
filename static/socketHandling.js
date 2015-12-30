@@ -54,7 +54,7 @@ socket.onmessage = function(e){
       alert("So close. you'll get 'em next time !");
       break;
     case "win":
-      alert("FINISH !! " + playerID + " won !");
+      alert("FINISH !! " + msg.playerID + " won !");
       break;
   }
 }
