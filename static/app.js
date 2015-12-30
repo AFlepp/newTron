@@ -15,6 +15,13 @@ var keys =  {
       40: "down"
     };
 
+var invDirections = {
+  right: "left",
+  left: "right",
+  up: "down",
+  down: "up"
+}
+
 var init = function (){
   choseGameScreen();
 }
@@ -73,7 +80,9 @@ var deviceMoved = function(e){
     direction = "down"
   }
 
-  if(direction != player.direction){
+  if(direction != player.direction && 
+      direction != invDirection[player.direction])
+  {
     socket.send(JSON.stringify({
       code: "playerMoved",
       playerID: player.id,
@@ -85,7 +94,7 @@ var deviceMoved = function(e){
 var moved = function(e){
   var keyCode = e.keyCode;
   
-  if(keys[keyCode]){
+  if(keys[keyCode] && keys[keyCode] != invDirection[player.Direction]){
   socket.send(JSON.stringify({
       code: "playerMoved",
       playerID: player.id,
