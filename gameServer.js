@@ -13,6 +13,7 @@ exports.Game.prototype.reset = function(){
     this.players[p].x = 50
     this.players[p].y = 50
     this.players[p].wall = []
+    this.players[p].previousPlaces = []
     this.players[p].alive = true
     this.players[p].setGhost()
   }

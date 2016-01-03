@@ -1,6 +1,11 @@
 .wrapper {
   height: 100%;
   width: 100%;
+  color:blue;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  font-size:large;
+  letter-spacing: 2px;
+  text-transform:uppercase;
 }
 
 canvas {
@@ -11,6 +16,8 @@ canvas {
     //border-radius: 20px;
     border-style: solid;
     border-color:green;
+	margin-left:0px;
+	margin-top:0px;
 }
 
 body {
@@ -25,23 +32,29 @@ form {
 		text-align:center;
 }
 
-table{
-	margin-left:35%;
-	margin-bottom:30px;
+.table{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:30px;
 	border-collapse:collapse;
 	border-style:solid;
 	border-color:green;
+	color:blue;
 }
 
 table td:hover {
 	background-color:green;
 }
 
-table td:active {
+.table td:active {
 	border-style:solid;
 	border-color:blue;
 }
 
-div {
-		font-size:medium;
+.listeJoueurs{
+	position:relative;
+	margin-right:0px;
+	width:10%;
+	text-transform:none;
+	font-size:medium;
 }

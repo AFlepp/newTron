@@ -7,16 +7,18 @@ var buildGameForm = function(){
   var choseGameTextInput = document.createElement('input');
   var choseNameTextInput= document.createElement('input');
 
-  choseLegend.innerHTML = "Please, enter your game name as" + 
-                          " well as your player name.";
+  choseLegend.innerHTML = "Veuillez indiquer le nom de votre arène " + 
+                          "et votre pseudo.";
 
   choseGameTextInput.setAttribute('type', 'text');
   choseGameTextInput.className += 'gameID';
+  choseGameTextInput.setAttribute('style', 'margin-right: 2%');
   choseNameTextInput.className += 'playerID';
   choseNameTextInput.setAttribute('type', 'text');
-  choseNameLabel.innerHTML = "Name :";
-  choseGameLabel.innerHTML = "Game :";
+  choseNameLabel.innerHTML = "Pseudo :";
+  choseGameLabel.innerHTML = "Arène :";
 
+  choseForm.setAttribute('style', 'margin-top: 18%');
   choseForm.appendChild(choseFieldset);
   choseFieldset.appendChild(choseLegend);
   choseFieldset.appendChild(choseGameLabel);

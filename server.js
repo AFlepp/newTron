@@ -80,6 +80,7 @@ wss.on("connection", function(ws){
         }
         break
       case "playerMoved":// ----------------- Someone has changed his direction
+        console.log(msg.direction)
         this.player.changeDirection(msg.direction)
         break
     }

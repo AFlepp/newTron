@@ -34,8 +34,6 @@ socket.onmessage = function(e){
       }
       break;
     case "Collision":
-      //turning into a fireball.
-      console.log("collision : ", msg.playerID)
       game.players[msg.playerID].laMuerta();
       break;
     case "reset":
@@ -49,6 +47,7 @@ socket.onmessage = function(e){
       break;
     case "ghostEnd":
       game.players[msg.playerID].ghost = false;
+      game.players[msg.playerID].previousPlaces = [];
       break;
     case "draw":
       game.draw();

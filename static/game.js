@@ -93,11 +93,11 @@ Game.prototype.won = function(playerID){
   this.ctx.fillStyle = "red";
   this.ctx.font = "bold " + Math.floor(this.canvas.width / 50) + "pt Arial";
   if(playerID == player.id){
-    this.ctx.fillText("YOU WON !", 
+    this.ctx.fillText("Vous avez gagné !", 
       canvas.width / 5, 
       canvas.height / 10);
   } else {
-    this.ctx.fillText(playerID + " WON !",
+    this.ctx.fillText(playerID + " a gagné !",
       canvas.width / 5, 
       canvas.height / 10);
   }
@@ -107,7 +107,7 @@ Game.prototype.draw = function(playerID){
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   this.ctx.fillStyle = "red";
   this.ctx.font = "bold " + Math.floor(this.canvas.width / 50) + "pt Arial";
-  this.ctx.fillText("IT'S A DRAW. YOU'LL GET 'EM NEXT TIME !", 
+  this.ctx.fillText("Pas loin. Vous les aurez la prochaine fois !", 
       canvas.width / 5, 
       canvas.height / 10);
 }
