@@ -162,11 +162,13 @@ exports.Player.prototype.collision = function (plCol){
     }
 
     if (this.y >= plCol.wall[i].y && this.y <= plCol.wall[i+1].y && 
-        this.x == (plCol.wall[i].x && plCol.wall[i+1].x)) {
+        this.x >= plCol.wall[i].x-1 && this.x >= plCol.wall[i+1].x-1 &&
+        this.x <= plCol.wall[i].x+1 && this.x <= plCol.wall[i+1].x+1) {
           this.alive = false
           this.laMuerta()
     } else if (this.y >= plCol.wall[i+1].y && this.y <= plCol.wall[i].y && 
-        this.x == (plCol.wall[i].x && plCol.wall[i+1].x)) {
+        this.x >= plCol.wall[i].x-1 && this.x >= plCol.wall[i+1].x-1 &&
+        this.x <= plCol.wall[i].x+1 && this.x <= plCol.wall[i+1].x+1) {
           this.alive = false
           this.laMuerta()
     }
