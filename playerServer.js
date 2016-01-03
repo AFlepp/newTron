@@ -104,12 +104,12 @@ exports.Player.prototype.addAllWalls = function(){
 exports.Player.prototype.laMuerta = function(){
   this.alive = false
   this.broadcast(
-      this.game,
-      {
-        code: "Collision",
-        playerID: this.id
-      }
-      )
+    this.game,
+    {
+      code: "Collision",
+      playerID: this.id
+    }
+    )
 }
 
 exports.Player.prototype.collision = function (plCol){
@@ -148,7 +148,7 @@ exports.Player.prototype.collision = function (plCol){
     }
   }
 
-  for (i = 0; i < plCol.wall.length-2; i++) {
+  for (i = 0; i < plCol.wall.length-1; i++) {
     if(plCol.wall[i].dir == "break" || plCol.wall[i+1].dir == "break")
       continue
     if (this.x >= plCol.wall[i].x && this.x <= plCol.wall[i+1].x && 
