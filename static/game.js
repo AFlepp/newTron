@@ -1,6 +1,7 @@
-function Game(can, ctx){
+function Game(can, pl, ctx){
   this.id;
   this.canvas = can;
+  this.playerList = pl;
   this.ctx = ctx;
   this.players = {};
   this.bikes = {
@@ -41,18 +42,27 @@ Game.prototype.addPlayer = function(player, colorChosen){
     bike = this.bikes[colorChosen];
     this.bikes[colorChosen].taken = true;
   }
+  // Create the corresponding DOM element
+  var playerRow = document.createElement('p');
+  playerRow.innerHTML = player.id;
+  playerRow.setAttribute('style', 'color: ' + colorChosen||bike.color);
+  this.playerList.appendChild(playerRow);
+
   this.players[player.id] = new Player({
     id: player.id,
     x: player.x,
     y: player.y,
     ghost: player.ghost,
     bikeColor: colorChosen || bike.color,
-    direction: player.direction
-  })
-  return this.players[player.id]
+    direction: player.direction,
+    DOMparagraph: playerRow
+  });
+
+  return this.players[player.id];
 }
 
 Game.prototype.removePlayer = function(playerID){
+  this.playerList.removeChild(this.players[playerID].DOMparagraph);
   delete this.players[playerID]
 }
 
@@ -69,18 +79,19 @@ Game.prototype.getNextBike = function(){
 }
 
 Game.prototype.drawWall = function(wall, color){
-  wall.shift(); // get rid of direction
+  if(wall.length == 0)
+    return
   var currentPoint = wall.shift();
   this.ctx.beginPath();
   this.ctx.moveTo(
-      this.canvas.width / 100 * currentPoint[0], 
-      this.canvas.height / 100 * currentPoint[1]
+      this.canvas.width / 100 * currentPoint.x, 
+      this.canvas.height / 100 * currentPoint.y
       );
   while(wall.length > 0){
     currentPoint = wall.shift();
     this.ctx.lineTo(
-        this.canvas.width / 100 * currentPoint[0], 
-        this.canvas.height / 100 * currentPoint[1]
+        this.canvas.width / 100 * currentPoint.x, 
+        this.canvas.height / 100 * currentPoint.y
         );
     this.ctx.strokeStyle=color;
     this.ctx.stroke();

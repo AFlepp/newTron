@@ -32,20 +32,16 @@ exports.Game.prototype.sendGameState = function(){
 }
 
 exports.Game.prototype.calculateNextFrame = function() {
-  var i, j, keys
-  keys = Object.keys(this.players)
-  for (i = 0; i < keys.length; i++) {
-    if(this.players[keys[i]] && this.players[keys[i]].alive){
-      this.players[keys[i]].move()
-      for (j = i; j < keys.length; j++){
-        if(!this.players[keys[j]].ghost && !this.players[keys[i]].ghost){
-          this.players[keys[i]].collision(this.players[keys[j]])
+  var player, playerBis;
+  for(p in this.players){
+    player = this.players[p]
+    if(player.alive){
+      player.move()
+      for(pbis in this.players){
+        playerBis = this.players[pbis]
+        if(!playerBis.ghost && !player.ghost){
+          player.collision(playerBis)
         }
-      }
-      for (k = i; k > keys.length; k--){
-         if(!this.players[keys[k]].ghost && !this.players[keys[i]].ghost){
-             this.players[keys[i]].collision(this.players[keys[k]])
-         }
       }
     }
   }

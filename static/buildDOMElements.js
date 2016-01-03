@@ -6,7 +6,7 @@ var buildGameForm = function(){
   var choseNameLabel = document.createElement('label');
   var choseGameTextInput = document.createElement('input');
   var choseNameTextInput= document.createElement('input');
-
+  
   choseLegend.innerHTML = "Veuillez indiquer le nom de votre arène " + 
                           "et votre pseudo.";
 
@@ -29,8 +29,11 @@ var buildGameForm = function(){
   return choseForm;
 }
 
-var buildCanvas = function(){
+var buildGameBoard = function(){
   var c = document.createElement('canvas');
+  c.setAttribute('style', 'display: inline-block');
+  var playerList = document.createElement('aside');
+  playerList.setAttribute('style', 'display: inline-block');
 
   wrapperWidth = wrapper.offsetWidth;
   wrapperHeight = wrapper.offsetHeight;
@@ -53,8 +56,8 @@ var buildCanvas = function(){
     }
   }
 
-  c.setAttribute('width', wrapperWidth);
-  c.setAttribute('height', wrapperHeight);
+  c.setAttribute('width', wrapperWidth/100*90);
+  c.setAttribute('height', wrapperHeight/100*90);
 
-  return c;
+  return {canvas: c, playerList: playerList};
 }

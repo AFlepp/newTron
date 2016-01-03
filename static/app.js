@@ -2,9 +2,11 @@ var wrapper = document.querySelector(".wrapper");
 var table = document.querySelector(".table");
 var reverted;
 var gameForm = buildGameForm();
-var canvas = buildCanvas();
+var gameBoard = buildGameBoard();
+var canvas = gameBoard.canvas;
+var playerList = gameBoard.playerList;
 var ctx =  canvas.getContext("2d");
-var game = new Game(canvas, ctx);
+var game = new Game(canvas, playerList, ctx);
 
 var player;
 var colorChosen;
@@ -68,7 +70,8 @@ var togglePageContent = function(){
     wrapper.replaceChild(gameForm, canvas);
   } else {
     table.style.display="none";
-    wrapper.replaceChild(canvas, gameForm);
+    wrapper.replaceChild(playerList, gameForm);
+    wrapper.appendChild(canvas);
     enableMoving();
   }
 }
