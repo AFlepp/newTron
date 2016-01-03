@@ -26,11 +26,23 @@ function Game(can, pl, ctx){
   }
 }
 
-Game.prototype.reset = function(){
+Game.prototype.reset = function(players){
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  while(this.playerList.hasChildNodes()){
+    this.playerList.removeChild(this.playerList.lastChild);
+  }
   var pl;
-  for(pl in this.players){
+  var playerRow;
+  for(pl in players){
+    if(!this.players[pl]){
+      delete this.players[pl]
+      continue
+    }
     this.players[pl].ghost = true;
+    playerRow = document.createElement('p');
+    playerRow.innerHTML = pl;
+    playerRow.setAttribute('style', 'color: ' + this.players[pl].bikeColor);
+    this.playerList.appendChild(playerRow);
   }
 }
 
@@ -42,10 +54,11 @@ Game.prototype.addPlayer = function(player, colorChosen){
     bike = this.bikes[colorChosen];
     this.bikes[colorChosen].taken = true;
   }
+  var bikeColor = colorChosen || bike.color;
   // Create the corresponding DOM element
   var playerRow = document.createElement('p');
   playerRow.innerHTML = player.id;
-  playerRow.setAttribute('style', 'color: ' + colorChosen||bike.color);
+  playerRow.setAttribute('style', 'color: ' + bikeColor);
   this.playerList.appendChild(playerRow);
 
   this.players[player.id] = new Player({
@@ -53,18 +66,13 @@ Game.prototype.addPlayer = function(player, colorChosen){
     x: player.x,
     y: player.y,
     ghost: player.ghost,
-    bikeColor: colorChosen || bike.color,
-    direction: player.direction,
-    DOMparagraph: playerRow
+    bikeColor: bikeColor,
+    direction: player.direction
   });
 
   return this.players[player.id];
 }
 
-Game.prototype.removePlayer = function(playerID){
-  this.playerList.removeChild(this.players[playerID].DOMparagraph);
-  delete this.players[playerID]
-}
 
 Game.prototype.getNextBike = function(){
     for(bike in this.bikes){

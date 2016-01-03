@@ -9,6 +9,7 @@ exports.Game = function(options) {
 
 exports.Game.prototype.reset = function(){
   var p
+  this.removeDC()
   for(p in this.players){
     this.players[p].x = 50
     this.players[p].y = 50
@@ -17,7 +18,7 @@ exports.Game.prototype.reset = function(){
     this.players[p].alive = true
     this.players[p].setGhost()
   }
-  this.broadcast(this,{code: "reset"})
+  this.broadcast(this,{code: "reset", players: this.getFormattedAllPlayers()})
 }
 
 exports.Game.prototype.sendGameState = function(){
@@ -50,7 +51,6 @@ exports.Game.prototype.calculateNextFrame = function() {
 }
 
 exports.Game.prototype.start = function() {
-  this.removeDC()
   this.mainLoop = setInterval(this.calculateNextFrame.bind(this), 1000/30)
 }
 

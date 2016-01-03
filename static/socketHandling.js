@@ -32,12 +32,13 @@ socket.onmessage = function(e){
       for(p in msg.players){
         game.players[p].update(msg.players[p]);
       }
+
       break;
     case "Collision":
       game.players[msg.playerID].laMuerta();
       break;
     case "reset":
-      game.reset();
+      game.reset(msg.players);
       break;
     case "gameFull":
       gameFull();
