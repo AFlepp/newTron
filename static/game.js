@@ -87,3 +87,27 @@ Game.prototype.drawWall = function(wall, color){
   }
   this.ctx.closePath();
 }
+
+Game.prototype.won = function(playerID){
+  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  this.ctx.fillStyle = "red";
+  this.ctx.font = "bold " + Math.floor(this.canvas.width / 50) + "pt Arial";
+  if(playerID == player.id){
+    this.ctx.fillText("YOU WON !", 
+      canvas.width / 5, 
+      canvas.height / 10);
+  } else {
+    this.ctx.fillText(playerID + " WON !",
+      canvas.width / 5, 
+      canvas.height / 10);
+  }
+}
+
+Game.prototype.draw = function(playerID){
+  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  this.ctx.fillStyle = "red";
+  this.ctx.font = "bold " + Math.floor(this.canvas.width / 50) + "pt Arial";
+  this.ctx.fillText("IT'S A DRAW. YOU'LL GET 'EM NEXT TIME !", 
+      canvas.width / 5, 
+      canvas.height / 10);
+}

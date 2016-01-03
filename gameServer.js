@@ -41,6 +41,11 @@ exports.Game.prototype.calculateNextFrame = function() {
           this.players[keys[i]].collision(this.players[keys[j]])
         }
       }
+      for (k = i; k > keys.length; k--){
+         if(!this.players[keys[k]].ghost && !this.players[keys[i]].ghost){
+             this.players[keys[i]].collision(this.players[keys[k]])
+         }
+      }
     }
   }
   this.checkIfWon()

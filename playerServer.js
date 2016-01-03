@@ -13,6 +13,7 @@ exports.Player = function(options){
   this.wall = options.wall
   this.speed = options.speed
   this.limits = {}
+  this.previousPlaces = [];
 }
 
 exports.Player.prototype.setGhost = function(){
@@ -46,9 +47,9 @@ exports.Player.prototype.move = function(){
       this.limits.right
       );
   
-  if(!reachBorder && !this.ghost)
+  if(reachBorder && !this.ghost)
     this.addWall();
-
+  
   switch(this.direction){
     case "up":
       if(this.limits.top)
@@ -62,7 +63,7 @@ exports.Player.prototype.move = function(){
       break;
     case "left":
       if(this.limits.left)
-        this.x = 100
+    	this.x = 100
         this.x -= this.speed / 16 * 9
       break; 
     case "right":
@@ -71,16 +72,28 @@ exports.Player.prototype.move = function(){
         this.x += this.speed / 16 * 9
       break;
   }
-
+  
+  
 }
 
 exports.Player.prototype.addWall = function(){
-	if (this.direction != this.wall[0]){
-	  this.wall[this.wall.length] = [this.x, this.y]
-	  this.wall[0] = this.direction
-        } else {
-          this.wall[this.wall.length - 1] = [this.x, this.y]
-        }
+	    this.wall[this.wall.length] = [this.x, this.y]
+	    this.wall[this.wall.length] = [0, 0]
+	    
+	    switch(this.direction){
+	    case "up":
+	    	this.wall[this.wall.length] = [this.x, 100]
+	    break;
+	    case "down":
+	    	this.wall[this.wall.length] = [this.x, 0]
+	    break;
+	    case "left":
+	    	this.wall[this.wall.length] = [100, this.y]
+	    break;
+	    case "right":
+	    	this.wall[this.wall.length] = [0, this.y]
+	    break;
+	    }
 }
 
 exports.Player.prototype.laMuerta = function(){
@@ -97,44 +110,30 @@ exports.Player.prototype.laMuerta = function(){
 exports.Player.prototype.collision = function (plCol){
 	switch(plCol.direction){
 		case "up":
-			this.boxCol = {
-				x1 : plCol.x-(4/6),
-				x2 : plCol.x+(4/6),
-				y1 : plCol.y-2,
-				y2 : plCol.y+2
-			}
-		break;
 		case "down":
 			this.boxCol = {
-				x1 : plCol.x-(4/6),
-				x2 : plCol.x+(4/6),
-				y1 : plCol.y-2,
-				y2 : plCol.y+2
+				x1 : this.x-(4/6),
+				x2 : this.x+(4/6),
+				y1 : this.y-2,
+				y2 : this.y+2
 			}
 		break;
 		case "left":
-			this.boxCol = {
-				x1 : plCol.x-2,
-				x2 : plCol.x+2,
-				y1 : plCol.y-(4/6),
-				y2 : plCol.y+(4/6)
-			}
-		break;
 		case "right":
 			this.boxCol = {
-				x1 : plCol.x-2,
-				x2 : plCol.x+2,
-				y1 : plCol.y-(4/6),
-				y2 : plCol.y+(4/6)
+				x1 : this.x-2,
+				x2 : this.x+2,
+				y1 : this.y-(4/6),
+				y2 : this.y+(4/6)
 			}
 		break;
 	}	
 	
 	
 	if (this != plCol){
-	
-		if ((this.x >= this.boxCol.x1 && this.x <= this.boxCol.x2)			
-			&& (this.y >= this.boxCol.y1 && this.y <= this.boxCol.y2)){
+		
+		if ((plCol.x >= this.boxCol.x1 && plCol.x <= this.boxCol.x2)			
+			&& (plCol.y >= this.boxCol.y1 && plCol.y <= this.boxCol.y2)){
 					this.col += 1
 					this.alive = false
 					plCol.alive = false
@@ -145,9 +144,8 @@ exports.Player.prototype.collision = function (plCol){
 		}
 		
 	}
-	
+	console.log(this.wall)
 	for (i = 1; i < plCol.wall.length-1; i++) {
-
 				if (this.x >= plCol.wall[i][0] && this.x <= plCol.wall[i+1][0]
 						&& this.y == (plCol.wall[i][1] && plCol.wall[i+1][1])) {
 							this.alive = false

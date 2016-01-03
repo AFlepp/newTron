@@ -51,10 +51,10 @@ socket.onmessage = function(e){
       game.players[msg.playerID].ghost = false;
       break;
     case "draw":
-      alert("So close. you'll get 'em next time !");
+      game.draw();
       break;
     case "win":
-      alert("FINISH !! " + msg.playerID + " won !");
+      game.won(msg.playerID);
       break;
   }
 }
