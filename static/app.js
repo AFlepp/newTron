@@ -63,10 +63,12 @@ init();
 
 var togglePageContent = function(){
   var table = document.querySelector(".table");
+  var title = document.querySelector("h1");
   if(wrapper.contains(canvas)){
     table.style.display="table";
     wrapper.replaceChild(gameForm, canvas);
   } else {
+    title.style.display="none";
     table.style.display="none";
     wrapper.replaceChild(playerList, gameForm);
     wrapper.appendChild(canvas);

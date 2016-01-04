@@ -24,7 +24,7 @@ var buildGameForm = function(){
   findMeGameButton.innerHTML = "Chercher une Arène";
   findMeGameButton.setAttribute('type', 'button');
 
-  choseForm.setAttribute('style', 'margin-top: 18%');
+  choseForm.setAttribute('style', 'margin-top: 6%');
   choseForm.appendChild(choseFieldset);
   choseFieldset.appendChild(findMeGameButton);
   choseFieldset.appendChild(choseLegend);
