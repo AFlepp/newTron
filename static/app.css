@@ -16,6 +16,10 @@
   font-family:Tron;
 }
 
+aside{
+	text-transform:normal;
+}
+
 .field{
 	margin-left:27%;
 	margin-right:27%;
