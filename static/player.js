@@ -9,7 +9,8 @@ function Player(options){
     down: undefined,
     left: undefined,
     right: undefined,
-    explode: undefined
+    explode: undefined,
+	exploded: undefined
   };
   var spr, dir, img;
   for(spr in this.sprites){
@@ -18,6 +19,10 @@ function Player(options){
         img = "/images/KABOUM!.png";
         dir = "none";
         break;
+	 case "exploded":
+		img = "/images/" + this.bikeColor + "_broken.png";
+		dir = "none";
+		break;
       default:
         console.log("/images/" + this.bikeColor + "_" + spr + ".png")
         img = "/images/" + this.bikeColor + "_" + spr + ".png"
@@ -57,7 +62,11 @@ Player.prototype.laMuerta = function(){
   this.sprites[this.direction].clear();
   this.sprites.explode.update();
   this.sprites.explode.draw();
-  setTimeout(function(){this.sprites.explode.clear()}.bind(this), 1250)
+  setTimeout(function(){
+	  this.sprites.explode.clear()
+	  this.sprites.exploded.update();
+	  this.sprites.exploded.draw();
+	}.bind(this), 1250);
 }
 
 Player.prototype.reset = function(){
