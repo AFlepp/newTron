@@ -51,10 +51,10 @@ socket.onmessage = function(e){
       game.players[msg.playerID].previousPlaces = [];
       break;
     case "draw":
-      game.draw();
+      setTimeout(function(){game.draw()}, 1500);
       break;
     case "win":
-      game.won(msg.playerID);
+      setTimeout(function(){game.won(msg.playerID)}, 1500);
       break;
     case "findGame":
       document.querySelector(".gameID").setAttribute('value', msg.gameID);

@@ -32,7 +32,6 @@ var buildGameForm = function(){
 
   var askForAGame = function(e){
     e.preventDefault();
-    console.log("blbl")
     socket.send(JSON.stringify({
       code: "findGame"
     }));

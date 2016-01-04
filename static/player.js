@@ -24,7 +24,6 @@ function Player(options){
 		dir = "none";
 		break;
       default:
-        console.log("/images/" + this.bikeColor + "_" + spr + ".png")
         img = "/images/" + this.bikeColor + "_" + spr + ".png"
         dir = spr;
     }

@@ -26,7 +26,7 @@ exports.Player.prototype.setGhost = function(){
         code: "ghostEnd",
         playerID: this.id
       })
-  }.bind(this), 3000)
+  }.bind(this), 500)
 }
 
 exports.Player.prototype.changeDirection = function(newDirection){
@@ -34,10 +34,10 @@ exports.Player.prototype.changeDirection = function(newDirection){
 }
 
 exports.Player.prototype.move = function(){
-  this.limits.top = this.y < 0;
-  this.limits.bottom = this.y > 100; 
-  this.limits.left = this.x < 0;
-  this.limits.right = this.x > 100; 
+  this.limits.top = this.y <= 0;
+  this.limits.bottom = this.y >= 100; 
+  this.limits.left = this.x <= 0;
+  this.limits.right = this.x >= 100; 
   // Set to true if has reached any border
   var reachBorder = ( 
       this.limits.top || 
@@ -46,30 +46,33 @@ exports.Player.prototype.move = function(){
       this.limits.right
       );
   
+  if(this.limits.top){
+    this.y = 99.9
+  } else if(this.limits.bottom){
+    this.y = 0.1
+  } else if(this.limits.left){
+    this.x = 99.9
+  } else if (this.limits.right){
+    this.x = 0.1
+  }
+
   if(reachBorder){
     this.previousPlaces.push({dir: "break"})
     this.addAllWalls()
   }
+
   
   switch(this.direction){
     case "up":
-      if(this.limits.top)
-        this.y = 100
       this.y -= this.speed
       break;
     case "down":
-      if(this.limits.bottom)
-        this.y = 0
       this.y += this.speed
       break;
     case "left":
-      if(this.limits.left)
-    	this.x = 100
       this.x -= this.speed / 16 * 9
       break; 
     case "right":
-      if(this.limits.right)
-        this.x = 0
       this.x += this.speed / 16 * 9
       break;
   }
@@ -141,10 +144,8 @@ exports.Player.prototype.collision = function (plCol){
           this.col += 1
           this.alive = false
           plCol.alive = false
-          console.log("collision entre 2 motos")
           this.laMuerta()
           plCol.laMuerta()
-          console.log(this.wall)
     }
   }
 
