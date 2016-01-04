@@ -5,6 +5,8 @@ function Sprite(options){
   this.image = new Image();
   this.image.src = options.img;
   this.direction = options.direction;
+  this.x;
+  this.y;
 
   this.canvas = canvas;
   this.ctx = ctx;

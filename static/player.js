@@ -10,7 +10,7 @@ function Player(options){
     left: undefined,
     right: undefined,
     explode: undefined,
-	exploded: undefined
+    exploded: undefined
   };
   var spr, dir, img;
   for(spr in this.sprites){

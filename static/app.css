@@ -2,7 +2,7 @@
   font-family: Tron;
   src: local("Tron"),
        local("Tron"),
-       url(TRON.ttf);
+       url(TRON.TTF);
 }
 
 .wrapper {
@@ -44,16 +44,10 @@
 }
 
 canvas {
-	//width : 1100;
-	//length : width/2;
     background-color: #222222;
-    border-collapse: collapse;
-    //border-radius: 20px;
-    border-style: solid;
-    border-color:green;
-	margin-left:0px;
-	margin-top:0px;
-	z-index:1;
+    margin-left:0px;
+    margin-top:0px;
+    z-index:1;
 }
 
 body {

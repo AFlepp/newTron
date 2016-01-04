@@ -46,22 +46,6 @@ exports.Player.prototype.move = function(){
       this.limits.right
       );
   
-  if(this.limits.top){
-    this.y = 99.9
-  } else if(this.limits.bottom){
-    this.y = 0.1
-  } else if(this.limits.left){
-    this.x = 99.9
-  } else if (this.limits.right){
-    this.x = 0.1
-  }
-
-  if(reachBorder){
-    this.previousPlaces.push({dir: "break"})
-    this.addAllWalls()
-  }
-
-  
   switch(this.direction){
     case "up":
       this.y -= this.speed
@@ -75,6 +59,21 @@ exports.Player.prototype.move = function(){
     case "right":
       this.x += this.speed / 16 * 9
       break;
+  }
+
+  if(reachBorder){
+    this.previousPlaces.push({dir: "break"})
+    this.addAllWalls()
+  }
+
+  if(this.limits.top){
+    this.y = 99.999
+  } else if(this.limits.bottom){
+    this.y = 0.001
+  } else if(this.limits.left){
+    this.x = 99.999
+  } else if (this.limits.right){
+    this.x = 0.001
   }
 
   if(!this.ghost)
@@ -153,11 +152,13 @@ exports.Player.prototype.collision = function (plCol){
     if(plCol.wall[i].dir == "break" || plCol.wall[i+1].dir == "break")
       continue
     if (this.x >= plCol.wall[i].x && this.x <= plCol.wall[i+1].x && 
-        this.y == (plCol.wall[i].y && plCol.wall[i+1].y)) {
+        this.y >= plCol.wall[i].y-1 && this.y >= plCol.wall[i+1].y-1 &&
+        this.y <= plCol.wall[i].y+1 && this.y <= plCol.wall[i+1].y+1) {
           this.alive = false
           this.laMuerta()
     } else if (this.x <= plCol.wall[i].x && this.x >= plCol.wall[i+1].x && 
-        this.y == (plCol.wall[i].y && plCol.wall[i+1].y)) {
+        this.y >= plCol.wall[i].y-1 && this.y >= plCol.wall[i+1].y-1 &&
+        this.y <= plCol.wall[i].y+1 && this.y <= plCol.wall[i+1].y+1) {
           this.alive = false
           this.laMuerta()
     }
