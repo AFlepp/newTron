@@ -1,5 +1,4 @@
 var wrapper = document.querySelector(".wrapper");
-var table = document.querySelector(".table");
 var reverted;
 var gameForm = buildGameForm();
 var gameBoard = buildGameBoard();
@@ -41,7 +40,6 @@ var init = function (){
 
 var choseGameScreen = function(){
   wrapper.appendChild(gameForm);
-  wrapper.appendChild(table);
   var submits = document.querySelectorAll('img');
 
   var submitToSocket = function(e){
@@ -126,7 +124,8 @@ var gameFull = function(){
 }
 
 var nameTaken = function(){
-  alert("Ce nom est déjà pris.");
+	buildMessageDisplay("Ce nom est déjà pris.");
+  //alert("Ce nom est déjà pris.");
 }
 
 var enregistrerCouleur = function(color){

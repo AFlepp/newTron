@@ -7,10 +7,12 @@ var buildGameForm = function(){
   var choseGameTextInput = document.createElement('input');
   var choseNameTextInput = document.createElement('input');
   var findMeGameButton = document.createElement('button');
+  var table = document.querySelector(".table");
   
   choseLegend.innerHTML = "Veuillez indiquer le nom de votre arène " + 
                           "et votre pseudo.";
 
+  choseFieldset.className += 'field';
   choseGameTextInput.setAttribute('type', 'text');
   choseGameTextInput.className += 'gameID';
   choseGameTextInput.setAttribute('style', 'margin-right: 2%');
@@ -18,7 +20,8 @@ var buildGameForm = function(){
   choseNameTextInput.setAttribute('type', 'text');
   choseNameLabel.innerHTML = "Pseudo :";
   choseGameLabel.innerHTML = "Arène :";
-  findMeGameButton.innerHTML = "Find me a game !";
+  findMeGameButton.className = "gameFinder";
+  findMeGameButton.innerHTML = "Chercher une Arène";
   findMeGameButton.setAttribute('type', 'button');
 
   choseForm.setAttribute('style', 'margin-top: 18%');
@@ -27,6 +30,7 @@ var buildGameForm = function(){
   choseFieldset.appendChild(choseLegend);
   choseFieldset.appendChild(choseGameLabel);
   choseFieldset.appendChild(choseNameLabel);
+  choseFieldset.appendChild(table);
   choseNameLabel.appendChild(choseNameTextInput);
   choseGameLabel.appendChild(choseGameTextInput);
 
@@ -75,4 +79,13 @@ var buildGameBoard = function(){
   c.setAttribute('height', wrapperHeight/100*90);
 
   return {canvas: c, playerList: playerList};
+}
+
+var buildMessageDisplay = function(message){
+	var box = document.createElement('h1');
+	var wrapper = document.querySelector('.wrapper');
+	box.className+='box';
+	box.innerHTML = message;	
+	wrapper.insertBefore(box, wrapper.firstChild);
+	setTimeout(function(){wrapper.removeChild(box)}.bind(this), 1750);
 }
