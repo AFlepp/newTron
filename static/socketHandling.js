@@ -56,5 +56,8 @@ socket.onmessage = function(e){
     case "win":
       game.won(msg.playerID);
       break;
+    case "findGame":
+      document.querySelector(".gameID").setAttribute('value', msg.gameID);
+      break;
   }
 }

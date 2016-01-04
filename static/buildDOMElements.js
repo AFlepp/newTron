@@ -5,7 +5,8 @@ var buildGameForm = function(){
   var choseGameLabel = document.createElement('label');
   var choseNameLabel = document.createElement('label');
   var choseGameTextInput = document.createElement('input');
-  var choseNameTextInput= document.createElement('input');
+  var choseNameTextInput = document.createElement('input');
+  var findMeGameButton = document.createElement('button');
   
   choseLegend.innerHTML = "Veuillez indiquer le nom de votre arène " + 
                           "et votre pseudo.";
@@ -17,14 +18,29 @@ var buildGameForm = function(){
   choseNameTextInput.setAttribute('type', 'text');
   choseNameLabel.innerHTML = "Pseudo :";
   choseGameLabel.innerHTML = "Arène :";
+  findMeGameButton.innerHTML = "Find me a game !";
+  findMeGameButton.setAttribute('type', 'button');
 
   choseForm.setAttribute('style', 'margin-top: 18%');
   choseForm.appendChild(choseFieldset);
+  choseFieldset.appendChild(findMeGameButton);
   choseFieldset.appendChild(choseLegend);
   choseFieldset.appendChild(choseGameLabel);
   choseFieldset.appendChild(choseNameLabel);
   choseNameLabel.appendChild(choseNameTextInput);
   choseGameLabel.appendChild(choseGameTextInput);
+
+  var askForAGame = function(e){
+    e.preventDefault();
+    console.log("blbl")
+    socket.send(JSON.stringify({
+      code: "findGame"
+    }));
+  }
+  
+  findMeGameButton.addEventListener(
+      'click', askForAGame, 'false'
+      );
 
   return choseForm;
 }

@@ -82,6 +82,12 @@ wss.on("connection", function(ws){
       case "playerMoved":// ----------------- Someone has changed his direction
         this.player.changeDirection(msg.direction)
         break
+      case"findGame":
+        ws.send(JSON.stringify({
+          code: "findGame",
+          gameID: findNotFullGame()
+        }))
+        break
     }
   })
 
@@ -111,4 +117,13 @@ var broadcastToPlayers = function(game, data){
       connect.close();
     }
   }
+}
+
+var findNotFullGame = function(){
+  for(game in games){
+    if(Object.keys(games[game]).length < 6){
+      return games[game].id
+    }
+  }
+  return "No game found"
 }
