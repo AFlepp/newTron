@@ -26,7 +26,7 @@ exports.Player.prototype.setGhost = function(){
         code: "ghostEnd",
         playerID: this.id
       })
-  }.bind(this), 500)
+  }.bind(this), 3000)
 }
 
 exports.Player.prototype.changeDirection = function(newDirection){
